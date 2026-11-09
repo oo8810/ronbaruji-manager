@@ -1,0 +1,1976 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#12161b">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="特別強化">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<title>特別強化管理(選手×ロンバルジ)</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%20100%20100%27%3E%3Crect%20width=%27100%27%20height=%27100%27%20rx=%2722%27%20fill=%27%233CB554%27/%3E%3Cg%20transform=%27translate%283.75%2016.5%29%20scale%280.75%29%27%20fill=%27%23FFFFFF%27%3E%3Cpath%20d=%27M24%2064L24%2044Q24%2040%2028%2040L40%2040Q44%2040%2046%2044L50%2050Q54%2055%2060%2056L72%2059Q78%2061%2078%2065L78%2066L24%2066Z%27/%3E%3Crect%20x=%2728%27%20y=%2770%27%20width=%277%27%20height=%277%27%20rx=%271.5%27/%3E%3Crect%20x=%2746%27%20y=%2770%27%20width=%277%27%20height=%277%27%20rx=%271.5%27/%3E%3Crect%20x=%2765%27%20y=%2770%27%20width=%277%27%20height=%277%27%20rx=%271.5%27/%3E%3C/g%3E%3Ccircle%20cx=%2768%27%20cy=%2733%27%20r=%2722%27%20fill=%27%2316200F%27%20stroke=%27%233CB554%27%20stroke-width=%273%27/%3E%3Cpath%20d=%27M57%2033L65.3%2041.3L80.4%2023.4%27%20fill=%27none%27%20stroke=%27%23FFFFFF%27%20stroke-width=%277%27%20stroke-linecap=%27round%27%20stroke-linejoin=%27round%27/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #12161b;
+    --panel: #1a2129;
+    --panel-2: #202932;
+    --line: #2c3742;
+    --chalk: #e9e6dc;
+    --muted: #8892a0;
+    --shoot: #c98a4b;
+    --pass: #5b8fb0;
+    --dribble: #9a7ab0;
+    --defense: #b06060;
+    --other: #b0a066;
+    --gk: #4f9c92;
+    --accent: #d8b25c;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--chalk);
+    font-family:'Inter',sans-serif;
+    line-height:1.5;
+  }
+  .wrap{
+    max-width:1040px;
+    margin:0 auto;
+    padding:36px 24px 80px;
+  }
+
+  header{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    border-bottom:2px solid var(--line);
+    padding-bottom:18px;
+    margin-bottom:20px;
+    flex-wrap:wrap;
+    gap:12px;
+  }
+  h1{
+    font-family:'Oswald',sans-serif;
+    font-weight:600;
+    font-size:26px;
+    letter-spacing:0.02em;
+    margin:0;
+  }
+  h1 span{color:var(--muted); font-weight:400; font-size:14px; display:block; margin-top:4px; font-family:'Inter',sans-serif;}
+
+  /* ---- tabs ---- */
+  .tabs{
+    display:flex;
+    gap:2px;
+    margin-bottom:24px;
+    border-bottom:1px solid var(--line);
+  }
+  .tab-btn{
+    background:none;
+    border:none;
+    color:var(--muted);
+    font-family:'Oswald',sans-serif;
+    font-size:14px;
+    letter-spacing:0.02em;
+    padding:10px 18px;
+    cursor:pointer;
+    border-bottom:2px solid transparent;
+    margin-bottom:-1px;
+  }
+  .tab-btn:hover{color:var(--chalk);}
+  .tab-btn.active{color:var(--accent); border-bottom-color:var(--accent);}
+  .tab-panel{display:none;}
+  .tab-panel.active{display:block;}
+
+  /* ---- inventory toggle ---- */
+  .inv-toggle{
+    display:flex;
+    gap:8px;
+    margin-bottom:18px;
+  }
+  .inv-toggle-btn{
+    background:var(--panel);
+    border:1px solid var(--line);
+    color:var(--muted);
+    font-family:'Oswald',sans-serif;
+    font-size:13px;
+    letter-spacing:0.02em;
+    padding:9px 16px;
+    cursor:pointer;
+    border-radius:2px;
+  }
+  .inv-toggle-btn:hover{color:var(--chalk);}
+  .inv-toggle-btn.active{color:var(--bg); background:var(--accent); border-color:var(--accent);}
+
+  /* ---- dashboard ---- */
+  .dash{
+    display:grid;
+    grid-template-columns:repeat(6, 1fr);
+    gap:1px;
+    background:var(--line);
+    border:1px solid var(--line);
+    margin-bottom:28px;
+  }
+  .dash-cell{
+    background:var(--panel);
+    padding:12px 10px;
+    text-align:center;
+    cursor:pointer;
+    transition:background 0.1s;
+  }
+  .dash-cell:hover{background:var(--panel-2);}
+  .dash-cell.active{background:var(--panel-2); box-shadow:inset 0 -3px 0 var(--cell-accent, var(--chalk));}
+  .dash-cell .num{font-family:'Oswald',sans-serif; font-size:22px; font-weight:600;}
+  .dash-cell .lbl{font-size:11px; color:var(--muted); margin-top:2px;}
+  .dash-cell.shoot .num{color:var(--shoot);}
+  .dash-cell.pass .num{color:var(--pass);}
+  .dash-cell.dribble .num{color:var(--dribble);}
+  .dash-cell.defense .num{color:var(--defense);}
+  .dash-cell.other .num{color:var(--other);}
+  .dash-cell.gk .num{color:var(--gk);}
+
+  /* ---- GKスキル不足(ヴェルレーヌのトレーニングの目安) ---- */
+  .gk-need-box{margin-bottom:24px;}
+  .gk-need-title{
+    font-family:'Oswald',sans-serif;
+    font-size:14px;
+    letter-spacing:0.02em;
+    margin-bottom:8px;
+    cursor:pointer;
+    user-select:none;
+  }
+  .gk-need-arrow{display:inline-block; width:14px;}
+  .gk-need-box.collapsed .gk-need-body{display:none;}
+  .gk-need-empty{font-size:12.5px; color:var(--muted);}
+  .gk-need-subtitle{
+    font-family:'Oswald',sans-serif;
+    font-size:12.5px;
+    color:var(--muted);
+    letter-spacing:0.02em;
+    margin:18px 0 8px;
+  }
+  table.gk-need-table{width:100%; border-collapse:collapse; font-size:13px;}
+  table.gk-need-table th{
+    background:#1f2937; color:#fff; text-align:left;
+    padding:7px 10px; font-weight:600; font-size:12px;
+  }
+  table.gk-need-table td{padding:7px 10px; border-bottom:1px solid var(--line);}
+  table.gk-need-table tr.top td{color:var(--gk); font-weight:600;}
+  .gk-need-top-badge{font-size:11px; color:var(--gk); font-weight:600;}
+
+  /* ---- toolbar ---- */
+  .toolbar{
+    display:flex;
+    gap:10px;
+    margin-bottom:20px;
+    flex-wrap:wrap;
+    align-items:center;
+  }
+  .toolbar input[type="text"], .toolbar select{
+    background:var(--panel);
+    border:1px solid var(--line);
+    color:var(--chalk);
+    padding:9px 12px;
+    font-family:'Inter',sans-serif;
+    font-size:13px;
+    border-radius:2px;
+  }
+  .toolbar input[type="text"]{flex:1; min-width:160px;}
+  .toolbar select{cursor:pointer;}
+  .add-btn{
+    background:var(--chalk);
+    color:var(--bg);
+    border:none;
+    padding:9px 18px;
+    font-family:'Oswald',sans-serif;
+    font-size:13px;
+    font-weight:600;
+    letter-spacing:0.03em;
+    cursor:pointer;
+    border-radius:2px;
+  }
+  .add-btn:hover{background:#fff;}
+  .ghost-btn{
+    background:none;
+    border:1px solid var(--line);
+    color:var(--muted);
+    padding:8px 14px;
+    font-family:'Inter',sans-serif;
+    font-size:12.5px;
+    cursor:pointer;
+    border-radius:2px;
+  }
+  .ghost-btn:hover{color:var(--chalk); border-color:var(--muted);}
+  .ghost-btn.danger:hover{color:var(--defense); border-color:var(--defense);}
+
+  /* ---- bulk panel ---- */
+  .bulk-panel{
+    background:var(--panel);
+    border:1px solid var(--line);
+    margin-bottom:20px;
+  }
+  .bulk-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:14px 18px;
+    border-bottom:1px solid var(--line);
+  }
+  .bulk-title{
+    font-family:'Oswald',sans-serif;
+    font-size:15px;
+    letter-spacing:0.02em;
+  }
+  .panel-close{
+    background:none;
+    border:none;
+    color:var(--muted);
+    font-size:20px;
+    cursor:pointer;
+    line-height:1;
+  }
+  .panel-close:hover{color:var(--chalk);}
+  #bulkCats{padding:16px 18px 4px;}
+  .bulk-footer{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:14px 18px;
+    border-top:1px solid var(--line);
+    flex-wrap:wrap;
+    gap:10px;
+  }
+  .bulk-footer-right{
+    display:flex;
+    align-items:center;
+    gap:14px;
+  }
+  #bulkSummary{
+    font-family:'Oswald',sans-serif;
+    font-size:13px;
+    color:var(--muted);
+  }
+  .chip-qty{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+  }
+  .qty-btn{
+    background:rgba(0,0,0,0.25);
+    border:none;
+    color:inherit;
+    width:16px;
+    height:16px;
+    border-radius:50%;
+    font-size:12px;
+    line-height:1;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:0;
+  }
+  .qty-btn:hover{background:rgba(0,0,0,0.4);}
+  .qty-num{font-family:'Oswald',sans-serif; font-size:12.5px; min-width:12px; text-align:center;}
+
+  /* ---- squad list (shared by inventory & players) ---- */
+  .squad{
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+  }
+  .entry{
+    background:var(--panel);
+    border:1px solid var(--line);
+  }
+  .entry-head{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:14px 16px;
+    cursor:pointer;
+  }
+  .entry-num{
+    font-family:'Oswald',sans-serif;
+    font-size:15px;
+    color:var(--muted);
+    width:52px;
+    flex-shrink:0;
+  }
+  .entry-skills{
+    display:flex;
+    gap:5px;
+    flex-wrap:wrap;
+    flex-shrink:0;
+    max-width:36%;
+  }
+  .skill-name{
+    font-size:12.5px;
+    padding:3px 9px;
+    border-radius:10px;
+    background:var(--panel-2);
+    border:1px solid var(--line);
+    white-space:nowrap;
+  }
+  .skill-name.unset{color:var(--muted); font-style:italic; border-style:dashed;}
+  .entry-label{
+    background:transparent;
+    border:none;
+    color:var(--chalk);
+    font-family:'Inter',sans-serif;
+    font-size:15px;
+    font-weight:500;
+    flex:1;
+    min-width:60px;
+    padding:2px 0;
+    border-bottom:1px solid transparent;
+  }
+  .entry-label:focus{outline:none; border-bottom:1px solid var(--muted);}
+  .entry-skillcount{
+    font-size:12px;
+    color:var(--muted);
+    white-space:nowrap;
+  }
+  .delete-btn{
+    background:none;
+    border:none;
+    color:var(--muted);
+    font-size:18px;
+    cursor:pointer;
+    padding:0 4px;
+    line-height:1;
+  }
+  .delete-btn:hover{color:var(--defense);}
+  .move-btn{
+    background:none;
+    border:1px solid var(--line);
+    color:var(--muted);
+    font-size:12px;
+    cursor:pointer;
+    padding:1px 5px;
+    border-radius:4px;
+    line-height:1.4;
+  }
+  .move-btn:hover:not(:disabled){color:var(--chalk); border-color:var(--muted);}
+  .move-btn:disabled{opacity:0.3; cursor:default;}
+  .drag-handle{color:var(--muted); cursor:grab; font-size:14px; padding:0 4px; user-select:none; flex-shrink:0;}
+  .drag-handle:hover{color:var(--chalk);}
+  .dragging{opacity:0.4;}
+  .drop-before{box-shadow:0 -2px 0 0 var(--accent);}
+  .drop-after{box-shadow:0 2px 0 0 var(--accent);}
+  .player-active-toggle{display:flex; align-items:center; gap:4px; font-size:11.5px; color:var(--muted); cursor:pointer; flex-shrink:0; white-space:nowrap;}
+  .player-active-toggle input{margin:0; cursor:pointer;}
+  .entry.inactive{opacity:0.5;}
+  .chevron{
+    color:var(--muted);
+    font-size:12px;
+    transition:transform 0.15s ease;
+    width:14px;
+    text-align:center;
+  }
+  .entry.open .chevron{transform:rotate(90deg);}
+
+  .entry-body{
+    display:none;
+    padding:4px 16px 18px 66px;
+    border-top:1px solid var(--line);
+  }
+  .entry.open .entry-body{display:block;}
+
+  .cat-block{margin-top:14px;}
+  .cat-title{
+    font-family:'Oswald',sans-serif;
+    font-size:12px;
+    letter-spacing:0.04em;
+    margin-bottom:8px;
+  }
+  .cat-title.shoot{color:var(--shoot);}
+  .cat-title.pass{color:var(--pass);}
+  .cat-title.dribble{color:var(--dribble);}
+  .cat-title.defense{color:var(--defense);}
+  .cat-title.other{color:var(--other);}
+  .cat-title.gk{color:var(--gk);}
+
+  .skill-grid{
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+  }
+  .skill-chip{
+    font-size:12.5px;
+    padding:6px 11px;
+    border-radius:14px;
+    border:1px solid var(--line);
+    background:var(--panel-2);
+    color:var(--muted);
+    cursor:pointer;
+    user-select:none;
+    transition:background 0.1s, color 0.1s, border-color 0.1s;
+  }
+  .skill-chip.on{
+    color:var(--bg);
+    border-color:transparent;
+  }
+  .skill-chip.shoot.on{background:var(--shoot);}
+  .skill-chip.pass.on{background:var(--pass);}
+  .skill-chip.dribble.on{background:var(--dribble);}
+  .skill-chip.defense.on{background:var(--defense);}
+  .skill-chip.other.on{background:var(--other);}
+  .skill-chip.gk.on{background:var(--gk);}
+  .skill-chip.pos.on{background:var(--accent);}
+  .skill-chip.disabled{opacity:0.35; cursor:not-allowed;}
+
+  .inactive-divider{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin:18px 0 10px;
+    color:var(--muted);
+    font-size:11.5px;
+    font-family:'Oswald',sans-serif;
+    letter-spacing:0.04em;
+  }
+  .inactive-divider::before, .inactive-divider::after{
+    content:'';
+    flex:1;
+    height:1px;
+    background:var(--line);
+  }
+
+  .empty-state{
+    text-align:center;
+    padding:60px 20px;
+    color:var(--muted);
+    border:1px dashed var(--line);
+  }
+  .empty-state p{margin:6px 0;}
+
+  .status-line{
+    text-align:center;
+    color:var(--muted);
+    font-size:12px;
+    margin-top:24px;
+  }
+
+  /* ---- player card specific ---- */
+  .player-meta{
+    display:flex;
+    gap:8px;
+    align-items:center;
+    flex-wrap:wrap;
+  }
+  .player-meta select, .player-meta input[type="text"]{
+    background:var(--panel-2);
+    border:1px solid var(--line);
+    color:var(--chalk);
+    padding:5px 8px;
+    font-size:12.5px;
+    border-radius:2px;
+  }
+  .starter-badge{
+    font-size:11px;
+    padding:3px 8px;
+    border-radius:10px;
+    font-family:'Oswald',sans-serif;
+    letter-spacing:0.02em;
+  }
+  .starter-badge.starter{background:var(--accent); color:var(--bg);}
+  .starter-badge.bench{background:var(--panel-2); color:var(--muted); border:1px solid var(--line);}
+  .starter-badge.gk-badge{background:var(--gk); color:var(--bg);}
+  .player-starter-star{
+    font-size:18px;
+    line-height:1;
+    cursor:pointer;
+    background:none;
+    border:none;
+    padding:0;
+    width:20px;
+    flex-shrink:0;
+    text-align:center;
+  }
+  .player-starter-star.starter{color:var(--accent);}
+  .player-starter-star.bench{color:var(--muted);}
+  td.starter-star-cell{font-size:15px; text-align:center;}
+
+  .target-list{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    margin-top:8px;
+  }
+  .target-row{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    background:var(--panel-2);
+    border:1px solid var(--line);
+    border-radius:4px;
+    padding:6px 10px;
+  }
+  .target-rank{
+    font-family:'Oswald',sans-serif;
+    color:var(--accent);
+    font-size:13px;
+    width:20px;
+  }
+  .target-row .tname{flex:1; font-size:13px;}
+  .target-row button{
+    background:none;
+    border:none;
+    color:var(--muted);
+    cursor:pointer;
+    font-size:13px;
+    padding:2px 4px;
+  }
+  .target-row button:hover{color:var(--chalk);}
+  .match-badge{
+    font-family:'Oswald',sans-serif;
+    font-size:12px;
+    color:var(--muted);
+  }
+
+  /* ---- plan tables ---- */
+  .plan-section{margin-bottom:36px;}
+  .plan-title{
+    font-family:'Oswald',sans-serif;
+    font-size:15px;
+    letter-spacing:0.02em;
+    margin-bottom:4px;
+  }
+  .plan-note{font-size:12px; color:var(--muted); margin-bottom:12px;}
+  table.plan-table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:13px;
+  }
+  table.plan-table th{
+    background:#1f2937;
+    color:#fff;
+    text-align:left;
+    padding:8px 10px;
+    font-weight:600;
+    font-size:12px;
+    letter-spacing:0.01em;
+  }
+  table.plan-table td{
+    padding:8px 10px;
+    border-bottom:1px solid var(--line);
+    vertical-align:top;
+  }
+  table.plan-table tr.used-up td{color:var(--muted); font-style:italic; background:rgba(255,255,255,0.02);}
+  table.plan-table tr.is-starter td:first-child{border-left:2px solid var(--accent);}
+  .pill{
+    display:inline-block;
+    font-size:11.5px;
+    padding:2px 8px;
+    border-radius:9px;
+    background:var(--panel-2);
+    border:1px solid var(--line);
+    margin:2px 4px 2px 0;
+  }
+  .pill.green{color:#7cd68a; border-color:#2f5c38;}
+  .pill.plan-check{cursor:pointer; display:inline-flex; align-items:center; gap:4px; user-select:none;}
+  .pill.plan-check input{margin:0; cursor:pointer;}
+  .plan-apply-bar{display:flex; align-items:center; justify-content:flex-end; gap:10px; margin:10px 0 0;}
+
+  @supports (padding: env(safe-area-inset-top)){
+    .wrap{padding-top:calc(36px + env(safe-area-inset-top)); padding-bottom:calc(80px + env(safe-area-inset-bottom));}
+  }
+  @media (max-width:640px){
+    .wrap{padding-left:14px; padding-right:14px;}
+    .dash{grid-template-columns:repeat(3, 1fr);}
+    .entry-body{padding-left:16px;}
+    table.plan-table{display:block; overflow-x:auto;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <h1>特別強化管理<span>ロンバルジ在庫・選手の目標スキル・特別強化プランを1つのアプリで管理する(外部データDBなし・自分で目標を決める版)</span></h1>
+  </header>
+
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="inventory">在庫管理</button>
+    <button class="tab-btn" data-tab="players">選手管理</button>
+    <button class="tab-btn" data-tab="plan">特別強化プラン</button>
+  </div>
+
+  <!-- ============ TAB: 在庫 ============ -->
+  <div class="tab-panel active" id="tab-inventory">
+    <div class="dash" id="dash"></div>
+    <div class="status-line" id="totalCountLine" style="margin-top:0;"></div>
+    <div class="gk-need-box" id="gkSkillNeedBox"></div>
+
+    <div class="toolbar">
+      <input type="text" id="searchInput" placeholder="スキル名で検索(例: ラボーナ)">
+      <button class="add-btn" id="addBtn">＋ 育成選手を追加</button>
+      <button class="ghost-btn" id="exportBtn">書き出す</button>
+      <button class="ghost-btn" id="importTrigger">読み込む</button>
+      <button class="ghost-btn" id="setSaveDirBtn">保存先フォルダを設定</button>
+      <button class="ghost-btn" id="renumberRonbarujiBtn">ロンバルジ番号を振り直す</button>
+      <input type="file" id="importInput" accept="application/json" style="display:none;">
+    </div>
+    <div class="status-line" id="saveDirLabel">保存先: 未設定(書き出すと通常のダウンロードフォルダに保存される)</div>
+
+    <div class="bulk-panel" id="bulkPanel" style="display:none;">
+      <div class="bulk-header">
+        <div class="bulk-title">スキルを選んで人数分まとめて登録</div>
+        <button class="panel-close" id="bulkClose">×</button>
+      </div>
+      <label style="display:flex; align-items:center; gap:6px; font-size:12.5px; color:var(--muted); padding:0 18px 12px;">
+        <input type="checkbox" id="bulkIsGK"> 全部ヴェルレーヌ(GK用)として登録する(OFFならGK系スキルだけ自動でヴェルレーヌになる)
+      </label>
+      <div id="bulkCats"></div>
+      <div class="bulk-footer">
+        <button class="ghost-btn" id="bulkBlankAdd">スキル未定のまま1人だけ追加</button>
+        <div class="bulk-footer-right">
+          <span id="bulkSummary">0人ぶん選択中</span>
+          <button class="add-btn" id="bulkSubmit">登録する</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="squad" id="squad"></div>
+    <div class="status-line" id="statusLine"></div>
+  </div>
+
+  <!-- ============ TAB: 選手 ============ -->
+  <div class="tab-panel" id="tab-players">
+    <div class="toolbar">
+      <input type="text" id="playerNameInput" placeholder="選手名(例: リオネル メッシ)">
+      <label style="display:flex; align-items:center; gap:6px; font-size:13px; color:var(--muted);">
+        <input type="checkbox" id="playerStarterInput"> スタメン
+      </label>
+      <button class="add-btn" id="addPlayerBtn">＋ 選手を追加</button>
+      <button class="ghost-btn" id="exportPlayersBtn">書き出す</button>
+      <button class="ghost-btn" id="importPlayersTrigger">読み込む</button>
+      <input type="file" id="importPlayersInput" accept="application/json" style="display:none;">
+    </div>
+    <div class="status-line" id="playerStatusLine" style="margin-top:0; margin-bottom:16px;"></div>
+
+    <div class="squad" id="playerSquad"></div>
+  </div>
+
+  <!-- ============ TAB: プラン ============ -->
+  <div class="tab-panel" id="tab-plan">
+    <div class="toolbar">
+      <button class="add-btn" id="recalcBtn">特別強化プランを計算</button>
+      <span class="status-line" id="planStatusLine" style="margin:0;"></span>
+    </div>
+    <div id="planOutput"></div>
+  </div>
+
+</div>
+
+<script>
+const CATEGORIES = [
+  { key: 'shoot',   label: 'シュート系',
+    skills: ['コントロールカーブ','コントロールループ','無回転シュート','ドロップシュート','ライジングシュート','ミドルシュート','アクロバティックシュート','ワンタッチシュート','PKキッカー'] },
+  { key: 'pass',    label: 'パス系',
+    skills: ['ヒールトリック','ワンタッチパス','スルーパス','バックスピンロブ','ピンポイントクロス','アウトスピンキック','ラボーナ','ノールックパス','低弾道ロブ'] },
+  { key: 'dribble', label: 'ドリブル系',
+    skills: ['シザーズ','ダブルタッチ','エラシコ','ルーレット','シャペウ','エッジターン','軸裏ターン','軸足当て','足裏コントロール'] },
+  { key: 'defense', label: 'ディフェンス系',
+    skills: ['マンマーク','チェイシング','インターセプト','ブロッカー','スライディングタックル','アクロバティッククリア'] },
+  { key: 'other',   label: 'その他',
+    skills: ['ヘッダー','ロングスロー','マリーシア','エアバトル','キャプテンシー','スーパーサブ','闘争心'] },
+  { key: 'gk',      label: 'ゴールキーパー系',
+    skills: ['低弾道パントキック','高弾道パントキック','GKロングスロー','PKストッパー'] },
+];
+const SKILL_TO_CAT = {};
+CATEGORIES.forEach(c => c.skills.forEach(s => SKILL_TO_CAT[s] = c.key));
+
+const POSITIONS = ['GK','CB','LSB','RSB','DMF','CMF','LMF','RMF','OMF','LWG','RWG','ST','CF'];
+
+function escapeHtml(str){
+  const d = document.createElement('div');
+  d.textContent = str;
+  return d.innerHTML;
+}
+
+/* ==================================================================
+   タブ切り替え
+   ================================================================== */
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+    if(btn.dataset.tab === 'plan') renderPlan();
+  });
+});
+
+/* ==================================================================
+   在庫(ロンバルジ/ヴェルレーヌ) — 旧ronbaruji-manager.htmlとほぼ同じロジック
+   1つの表で一緒に管理し、個体ごとのisGKフラグで種別を区別する
+   (ロンバルジ=フィールド選手専用、ヴェルレーヌ=GK専用。ポジション不一致で相互流用不可)
+   ================================================================== */
+const STORAGE_KEY = 'ronbaruji-entries';
+const STORAGE_KEY_VERLAINE_LEGACY = 'verlaine-entries'; // 旧: 在庫を分けて管理していた頃の名残。読み込んで一度だけ統合する
+const STORAGE_KEY_ENTRY_COUNTER = 'ronbaruji-entry-counter';
+let entries = [];
+let openIds = new Set();
+let entryCounter = 0;
+let activeCategoryFilter = ''; // 上部ダッシュボードのタイルクリックで切り替える絞り込み状態
+
+function loadEntryCounter(){
+  let raw = null;
+  try{ raw = localStorage.getItem(STORAGE_KEY_ENTRY_COUNTER); }catch(e){}
+  const stored = raw !== null ? parseInt(raw, 10) : NaN;
+  if(!isNaN(stored)){
+    entryCounter = stored;
+    return;
+  }
+  // 初回マイグレーション: カウンター未保存の場合、既存entriesのラベル内の最大番号を引き継ぐ
+  let max = 0;
+  entries.forEach(en => {
+    const m = /(\d+)\s*$/.exec(en.label || '');
+    if(m) max = Math.max(max, parseInt(m[1], 10));
+  });
+  entryCounter = max;
+}
+function nextEntryNum(){
+  entryCounter += 1;
+  try{ localStorage.setItem(STORAGE_KEY_ENTRY_COUNTER, String(entryCounter)); }catch(e){}
+  return entryCounter;
+}
+
+function newEntry(num, isGK){
+  return {
+    id: 'e' + Date.now() + Math.random().toString(36).slice(2,7),
+    label: (isGK ? 'ヴェルレーヌ' : 'ロンバルジ') + ' ' + String(num).padStart(3,'0'),
+    isGK: !!isGK,
+    skills: []
+  };
+}
+function loadEntries(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    entries = raw ? JSON.parse(raw) : [];
+    entries.forEach(en => { if(typeof en.isGK !== 'boolean') en.isGK = false; });
+    // 旧verlaine-entries(在庫を分けていた頃のデータ)が残っていれば、isGK:trueとして一度だけ取り込む
+    const legacyRaw = localStorage.getItem(STORAGE_KEY_VERLAINE_LEGACY);
+    if(legacyRaw){
+      try{
+        const legacy = JSON.parse(legacyRaw);
+        if(Array.isArray(legacy) && legacy.length){
+          legacy.forEach(en => { en.isGK = true; });
+          entries = entries.concat(legacy);
+          saveEntries();
+        }
+      }catch(e){}
+      localStorage.removeItem(STORAGE_KEY_VERLAINE_LEGACY);
+    }
+  }catch(e){ entries = []; }
+  loadEntryCounter();
+  render();
+}
+function saveEntries(){
+  const statusLine = document.getElementById('statusLine');
+  try{
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+    statusLine.textContent = '';
+  }catch(e){
+    statusLine.textContent = '保存に失敗した。ブラウザの設定(プライベートモードなど)を確認して。';
+  }
+}
+function buildDash(){
+  const dash = document.getElementById('dash');
+  dash.innerHTML = '';
+  CATEGORIES.forEach(cat => {
+    const count = entries.filter(en => en.skills.some(s => SKILL_TO_CAT[s] === cat.key)).length;
+    const cell = document.createElement('div');
+    cell.className = 'dash-cell ' + cat.key + (activeCategoryFilter === cat.key ? ' active' : '');
+    cell.style.setProperty('--cell-accent', `var(--${cat.key})`);
+    cell.innerHTML = `<div class="num">${count}</div><div class="lbl">${cat.label}</div>`;
+    cell.addEventListener('click', () => {
+      activeCategoryFilter = (activeCategoryFilter === cat.key) ? '' : cat.key;
+      render();
+    });
+    dash.appendChild(cell);
+  });
+}
+// スキル順ソート用: CATEGORIES(シュート系→...→GK系)を通した各スキルの並び順インデックス
+const SKILL_ORDER_INDEX = {};
+(() => {
+  let i = 0;
+  CATEGORIES.forEach(cat => cat.skills.forEach(s => { SKILL_ORDER_INDEX[s] = i++; }));
+})();
+function entrySkillRank(en){
+  // 個体が持つスキルのうち最もCATEGORIES順で早いものを代表値にする。未設定は最後。
+  if(en.skills.length === 0) return Infinity;
+  return Math.min(...en.skills.map(s => SKILL_ORDER_INDEX[s] ?? Infinity));
+}
+function getFiltered(){
+  const q = document.getElementById('searchInput').value.trim();
+  let list = entries.map((en, idx) => ({ en, idx }));
+  if(q){
+    list = list.filter(({en}) => en.skills.some(s => s.includes(q)) || en.label.includes(q));
+  }
+  if(activeCategoryFilter){
+    list = list.filter(({en}) => en.skills.some(s => SKILL_TO_CAT[s] === activeCategoryFilter));
+  }
+  list.sort((a,b) => entrySkillRank(a.en) - entrySkillRank(b.en) || a.idx - b.idx);
+  return list;
+}
+function render(){
+  buildDash();
+  renderGKSkillNeed();
+
+  const ronbarujiCount = entries.filter(en => !en.isGK).length;
+  const verlaineCount = entries.filter(en => en.isGK).length;
+  document.getElementById('totalCountLine').textContent =
+    `合計保有数: ロンバルジ ${ronbarujiCount}体 / ヴェルレーヌ ${verlaineCount}体`;
+
+  const squad = document.getElementById('squad');
+  squad.innerHTML = '';
+  const filtered = getFiltered();
+
+  if(entries.length === 0){
+    squad.innerHTML = `<div class="empty-state"><p>まだ育成選手が登録されてない。</p><p>「＋ 育成選手を追加」から最初の1人を登録して。</p></div>`;
+    return;
+  }
+  if(filtered.length === 0){
+    squad.innerHTML = `<div class="empty-state"><p>条件に一致する育成選手がいない。</p></div>`;
+    return;
+  }
+
+  filtered.forEach(({en, idx}) => {
+    const isOpen = openIds.has(en.id);
+    const entryEl = document.createElement('div');
+    entryEl.className = 'entry' + (isOpen ? ' open' : '');
+
+    const head = document.createElement('div');
+    head.className = 'entry-head';
+    const skillsHtml = en.skills.length
+      ? en.skills.map(s => `<span class="skill-name" style="color:var(--${SKILL_TO_CAT[s]})">${escapeHtml(s)}</span>`).join('')
+      : `<span class="skill-name unset">未設定</span>`;
+    head.innerHTML = `
+      <span class="chevron">▶</span>
+      <span class="entry-num">${String(idx+1).padStart(3,'0')}</span>
+      <span class="starter-badge ${en.isGK ? 'gk-badge' : 'bench'}">${en.isGK ? 'GK' : 'フィールド'}</span>
+      <span class="entry-skills">${skillsHtml}</span>
+      <input class="entry-label" value="${escapeHtml(en.label)}" data-id="${en.id}">
+      <span class="entry-skillcount">${en.skills.length}スキル</span>
+      <button class="delete-btn" data-id="${en.id}" title="削除">×</button>
+    `;
+    head.addEventListener('click', (e) => {
+      if(e.target.classList.contains('entry-label') || e.target.classList.contains('delete-btn')) return;
+      if(openIds.has(en.id)) openIds.delete(en.id); else openIds.add(en.id);
+      render();
+    });
+    entryEl.appendChild(head);
+
+    const labelInput = head.querySelector('.entry-label');
+    labelInput.addEventListener('click', e => e.stopPropagation());
+    labelInput.addEventListener('change', () => {
+      en.label = labelInput.value.trim() || en.label;
+      saveEntries();
+    });
+
+    const delBtn = head.querySelector('.delete-btn');
+    delBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      entries = entries.filter(x => x.id !== en.id);
+      openIds.delete(en.id);
+      saveEntries();
+      render();
+    });
+
+    const body = document.createElement('div');
+    body.className = 'entry-body';
+    body.innerHTML = CATEGORIES.map(cat => `
+      <div class="cat-block">
+        <div class="cat-title ${cat.key}">${cat.label}</div>
+        <div class="skill-grid">
+          ${cat.skills.map(s => `<span class="skill-chip ${cat.key} ${en.skills.includes(s) ? 'on' : ''}" data-skill="${escapeHtml(s)}">${s}</span>`).join('')}
+        </div>
+      </div>
+    `).join('');
+    body.querySelectorAll('.skill-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        const skill = chip.getAttribute('data-skill');
+        const has = en.skills.includes(skill);
+        if(has){ en.skills = en.skills.filter(s => s !== skill); }
+        else{ en.skills.push(skill); }
+        saveEntries();
+        render();
+      });
+    });
+    entryEl.appendChild(body);
+    squad.appendChild(entryEl);
+  });
+}
+
+let bulkQty = {};
+function renderBulkPanel(){
+  const container = document.getElementById('bulkCats');
+  container.innerHTML = CATEGORIES.map(cat => `
+    <div class="cat-block">
+      <div class="cat-title ${cat.key}">${cat.label}</div>
+      <div class="skill-grid">
+        ${cat.skills.map(s => {
+          const qty = bulkQty[s] || 0;
+          return `<span class="skill-chip bulk-chip ${cat.key} ${qty>0 ? 'on' : ''}" data-skill="${escapeHtml(s)}">
+            <span class="chip-name">${s}</span>
+            ${qty>0 ? `<span class="chip-qty"><button class="qty-btn minus" data-skill="${escapeHtml(s)}">−</button><span class="qty-num">${qty}</span></span>` : ''}
+          </span>`;
+        }).join('')}
+      </div>
+    </div>
+  `).join('');
+  container.querySelectorAll('.skill-chip').forEach(chip => {
+    chip.addEventListener('click', (e) => {
+      if(e.target.classList.contains('qty-btn')) return;
+      const skill = chip.getAttribute('data-skill');
+      bulkQty[skill] = (bulkQty[skill] || 0) + 1;
+      renderBulkPanel();
+    });
+  });
+  container.querySelectorAll('.qty-btn.minus').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const skill = btn.getAttribute('data-skill');
+      bulkQty[skill] = Math.max(0, (bulkQty[skill] || 0) - 1);
+      if(bulkQty[skill] === 0) delete bulkQty[skill];
+      renderBulkPanel();
+    });
+  });
+  const total = Object.values(bulkQty).reduce((a,b) => a+b, 0);
+  document.getElementById('bulkSummary').textContent = total + '人ぶん選択中';
+}
+document.getElementById('addBtn').addEventListener('click', () => {
+  bulkQty = {};
+  document.getElementById('bulkIsGK').checked = false;
+  document.getElementById('bulkPanel').style.display = 'block';
+  renderBulkPanel();
+});
+document.getElementById('bulkClose').addEventListener('click', () => {
+  document.getElementById('bulkPanel').style.display = 'none';
+});
+document.getElementById('renumberRonbarujiBtn').addEventListener('click', () => {
+  const list = entries.filter(en => !en.isGK).sort((a, b) => {
+    const na = parseInt((/(\d+)\s*$/.exec(a.label || '') || [])[1] || '0', 10);
+    const nb = parseInt((/(\d+)\s*$/.exec(b.label || '') || [])[1] || '0', 10);
+    return na - nb;
+  });
+  if(list.length === 0){ alert('ロンバルジの個体がまだ登録されてない。'); return; }
+  if(!confirm(`ロンバルジ${list.length}体のラベル番号を001から振り直す。よければOKを押して。`)) return;
+  list.forEach((en, i) => { en.label = 'ロンバルジ ' + String(i + 1).padStart(3, '0'); });
+  saveEntries();
+  render();
+});
+document.getElementById('bulkBlankAdd').addEventListener('click', () => {
+  if(!confirm('スキル未設定のまま登録する。個体は基本スキル付きで獲得するはずなので、誤クリックでないか確認して。よければOKを押して。')) return;
+  const isGK = document.getElementById('bulkIsGK').checked;
+  const en = newEntry(nextEntryNum(), isGK);
+  entries.push(en);
+  document.getElementById('bulkPanel').style.display = 'none';
+  saveEntries();
+  render();
+});
+document.getElementById('bulkSubmit').addEventListener('click', () => {
+  // チェックボックスON = 強制的に全部ヴェルレーヌとして登録(手動上書き)
+  // チェックボックスOFF = スキルのカテゴリごとに自動判定(GK系はヴェルレーヌ、それ以外はロンバルジ)
+  const forceGK = document.getElementById('bulkIsGK').checked;
+  Object.entries(bulkQty).forEach(([skill, qty]) => {
+    const isGK = forceGK || SKILL_TO_CAT[skill] === 'gk';
+    for(let i = 0; i < qty; i++){
+      const en = newEntry(nextEntryNum(), isGK);
+      en.skills = [skill];
+      entries.push(en);
+    }
+  });
+  document.getElementById('bulkPanel').style.display = 'none';
+  saveEntries();
+  render();
+});
+
+/* ---- 保存先フォルダ(File System Access API + IndexedDB) ---- */
+const DIR_DB_NAME = 'ronbaruji-manager-db';
+const DIR_STORE_NAME = 'handles';
+const DIR_KEY = 'saveDir';
+let saveDirHandle = null;
+
+function idbOpen(){
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open(DIR_DB_NAME, 1);
+    req.onupgradeneeded = () => req.result.createObjectStore(DIR_STORE_NAME);
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+async function idbGet(key){
+  const db = await idbOpen();
+  return new Promise((resolve, reject) => {
+    const req = db.transaction(DIR_STORE_NAME, 'readonly').objectStore(DIR_STORE_NAME).get(key);
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+async function idbSet(key, val){
+  const db = await idbOpen();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(DIR_STORE_NAME, 'readwrite');
+    tx.objectStore(DIR_STORE_NAME).put(val, key);
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
+  });
+}
+function updateSaveDirLabel(){
+  const label = document.getElementById('saveDirLabel');
+  if(!label) return;
+  label.textContent = saveDirHandle
+    ? `保存先: ${saveDirHandle.name}(書き出すとこのフォルダに直接保存される)`
+    : '保存先: 未設定(書き出すと通常のダウンロードフォルダに保存される)';
+}
+async function restoreSaveDir(){
+  if(!window.showDirectoryPicker) return;
+  try{
+    const handle = await idbGet(DIR_KEY);
+    if(handle) saveDirHandle = handle;
+  }catch(e){}
+  updateSaveDirLabel();
+}
+document.getElementById('setSaveDirBtn').addEventListener('click', async () => {
+  if(!window.showDirectoryPicker){
+    alert('このブラウザは保存先フォルダの指定に対応してない。Chrome/Edgeで開いてみて。');
+    return;
+  }
+  try{
+    const handle = await window.showDirectoryPicker();
+    const perm = await handle.requestPermission({ mode: 'readwrite' });
+    if(perm !== 'granted'){ alert('書き込み権限が許可されなかった。もう一度試して。'); return; }
+    await idbSet(DIR_KEY, handle);
+    saveDirHandle = handle;
+    updateSaveDirLabel();
+  }catch(e){ /* キャンセル */ }
+});
+async function saveJsonFile(filename, json, statusLine){
+  if(saveDirHandle){
+    try{
+      let perm = await saveDirHandle.queryPermission({ mode: 'readwrite' });
+      if(perm !== 'granted'){ perm = await saveDirHandle.requestPermission({ mode: 'readwrite' }); }
+      if(perm === 'granted'){
+        const fileHandle = await saveDirHandle.getFileHandle(filename, { create: true });
+        const writable = await fileHandle.createWritable();
+        await writable.write(json);
+        await writable.close();
+        if(statusLine) statusLine.textContent = `${saveDirHandle.name} フォルダに ${filename} として保存した`;
+        return;
+      }
+    }catch(e){
+      if(statusLine) statusLine.textContent = '指定フォルダへの保存に失敗したから、通常のダウンロードに切り替えた。';
+    }
+  }
+  const blob = new Blob([json], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); a.remove();
+  URL.revokeObjectURL(url);
+}
+document.getElementById('exportBtn').addEventListener('click', async () => {
+  const statusLine = document.getElementById('statusLine');
+  await saveJsonFile('ronbaruji-backup-latest.json', JSON.stringify(entries, null, 2), statusLine);
+});
+document.getElementById('importTrigger').addEventListener('click', () => {
+  document.getElementById('importInput').click();
+});
+document.getElementById('importInput').addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try{
+      const data = JSON.parse(reader.result);
+      if(!Array.isArray(data)) throw new Error('形式が違う');
+      if(entries.length > 0){
+        const ok = confirm(`今登録されてる${entries.length}件を、このファイルの${data.length}件で上書きする。よければOKを押して。`);
+        if(!ok) return;
+      }
+      entries = data;
+      entries.forEach(en => { if(typeof en.isGK !== 'boolean') en.isGK = false; });
+      saveEntries();
+      render();
+    }catch(err){
+      alert('読み込めなかった。バックアップJSONファイルか確認して。');
+    }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+});
+document.getElementById('searchInput').addEventListener('input', render);
+
+/* ==================================================================
+   選手管理(新規) — 目標スキルは外部DBを持たず、ユーザーが自分で決めて
+   優先順に並べる(先に入れたスキルほど優先度が高い)
+   ================================================================== */
+const STORAGE_KEY_PLAYERS = 'ronbaruji-manager-players';
+const MAX_TARGET_SKILLS = 8; // 目標スキルの候補上限(追加スキル枠は5だが、採用数が拮抗するときの控え候補用に多めに持てる)
+let players = [];
+let openPlayerIds = new Set();
+
+function newPlayer(name, starter){
+  return {
+    id: 'p' + Date.now() + Math.random().toString(36).slice(2,7),
+    name, positions: [], starter: !!starter,
+    active: true,
+    currentSkills: [],
+    targetSkills: []
+  };
+}
+function loadPlayers(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY_PLAYERS);
+    players = raw ? JSON.parse(raw) : [];
+    players.forEach(p => {
+      if(!Array.isArray(p.positions)){
+        p.positions = p.position ? [p.position] : [];
+        delete p.position;
+      }
+      if(typeof p.active !== 'boolean') p.active = true;
+    });
+  }catch(e){ players = []; }
+  renderPlayers();
+  renderGKSkillNeed(); // 選手データ読み込み後、GKスキル不足表示を最新化する
+}
+function savePlayers(){
+  const statusLine = document.getElementById('playerStatusLine');
+  try{
+    localStorage.setItem(STORAGE_KEY_PLAYERS, JSON.stringify(players));
+    statusLine.textContent = '';
+  }catch(e){
+    statusLine.textContent = '保存に失敗した。ブラウザの設定を確認して。';
+  }
+  renderGKSkillNeed(); // 目標スキル・対象フラグ等の変更でGKスキル不足表示が変わるため再描画
+}
+
+document.getElementById('addPlayerBtn').addEventListener('click', () => {
+  const name = document.getElementById('playerNameInput').value.trim();
+  const starter = document.getElementById('playerStarterInput').checked;
+  if(!name){ alert('選手名を入力して。'); return; }
+  players.push(newPlayer(name, starter));
+  document.getElementById('playerNameInput').value = '';
+  document.getElementById('playerStarterInput').checked = false;
+  savePlayers();
+  renderPlayers();
+});
+
+function getPlayerDisplayOrder(){
+  // active(対象)の選手を先に、対象外を後ろに。各グループ内では元の並び順(=優先度)を維持する
+  return players
+    .map((_, i) => i)
+    .sort((a, b) => {
+      const aInactive = players[a].active === false;
+      const bInactive = players[b].active === false;
+      if(aInactive !== bInactive) return aInactive ? 1 : -1;
+      return a - b;
+    });
+}
+function movePlayerByDisplayPos(order, displayPos, dir){
+  const otherPos = displayPos + dir;
+  if(otherPos < 0 || otherPos >= order.length) return;
+  const realA = order[displayPos];
+  const realB = order[otherPos];
+  if((players[realA].active === false) !== (players[realB].active === false)) return;
+  [players[realA], players[realB]] = [players[realB], players[realA]];
+  savePlayers();
+  renderPlayers();
+}
+// ドラッグ並べ替えの共通処理。ハンドルを掴むと行(rowEl)ごと動く。
+// group: 同じ値を持つ行同士の間でだけ入れ替え可能。onMove(fromKey, toKey)は元/先のキー(インデックス)を渡す
+let dragState = null;
+function attachDragSort(rowEl, handleEl, group, key, onMove){
+  handleEl.draggable = true;
+  handleEl.addEventListener('click', e => e.stopPropagation());
+  handleEl.addEventListener('dragstart', (e) => {
+    dragState = { group, key };
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', String(key));
+    e.dataTransfer.setDragImage(rowEl, 10, 10);
+    rowEl.classList.add('dragging');
+  });
+  handleEl.addEventListener('dragend', () => {
+    dragState = null;
+    document.querySelectorAll('.dragging,.drop-before,.drop-after')
+      .forEach(el => el.classList.remove('dragging','drop-before','drop-after'));
+  });
+  rowEl.addEventListener('dragover', (e) => {
+    if(!dragState || dragState.group !== group || dragState.key === key) return;
+    e.preventDefault();
+    const goingDown = dragState.key < key;
+    rowEl.classList.toggle('drop-after', goingDown);
+    rowEl.classList.toggle('drop-before', !goingDown);
+  });
+  rowEl.addEventListener('dragleave', () => rowEl.classList.remove('drop-before','drop-after'));
+  rowEl.addEventListener('drop', (e) => {
+    if(!dragState || dragState.group !== group || dragState.key === key) return;
+    e.preventDefault();
+    const from = dragState.key;
+    dragState = null;
+    onMove(from, key);
+  });
+}
+function renderPlayers(){
+  const squad = document.getElementById('playerSquad');
+  squad.innerHTML = '';
+  if(players.length === 0){
+    squad.innerHTML = `<div class="empty-state"><p>まだ選手が登録されてない。</p><p>上のフォームから選手を追加して。</p></div>`;
+    return;
+  }
+
+  const order = getPlayerDisplayOrder();
+  let dividerInserted = false;
+
+  order.forEach((realIdx, dPos) => {
+    const p = players[realIdx];
+    const isInactive = p.active === false;
+
+    if(isInactive && !dividerInserted){
+      const divider = document.createElement('div');
+      divider.className = 'inactive-divider';
+      divider.textContent = '対象外';
+      squad.appendChild(divider);
+      dividerInserted = true;
+    }
+
+    const isOpen = openPlayerIds.has(p.id);
+    const entryEl = document.createElement('div');
+    entryEl.className = 'entry' + (isOpen ? ' open' : '') + (isInactive ? ' inactive' : '');
+
+    const prevRealIdx = dPos > 0 ? order[dPos-1] : null;
+    const nextRealIdx = dPos < order.length-1 ? order[dPos+1] : null;
+    const canMoveUp = prevRealIdx !== null && (players[prevRealIdx].active === false) === isInactive;
+    const canMoveDown = nextRealIdx !== null && (players[nextRealIdx].active === false) === isInactive;
+
+    const head = document.createElement('div');
+    head.className = 'entry-head';
+    head.innerHTML = `
+      <span class="drag-handle" title="ドラッグで並べ替え">⠿</span>
+      <span class="entry-num">優先${dPos+1}</span>
+      <button class="move-btn" data-act="up" title="優先度を上げる" ${canMoveUp?'':'disabled'}>↑</button>
+      <button class="move-btn" data-act="down" title="優先度を下げる" ${canMoveDown?'':'disabled'}>↓</button>
+      <span class="player-starter-star ${p.starter ? 'starter' : 'bench'}" title="${p.starter ? 'スタメン' : '控え'}(クリックで切替)">${p.starter ? '★' : '☆'}</span>
+      <span class="entry-skillcount">${escapeHtml(p.positions.join('/')||'ポジション未設定')}</span>
+      <input class="entry-label" value="${escapeHtml(p.name)}" data-id="${p.id}" style="max-width:180px; flex:none;">
+      <span class="entry-skillcount">現在${p.currentSkills.length}・目標${p.targetSkills.length}</span>
+      <label class="player-active-toggle"><input type="checkbox" class="player-active-check" ${p.active===false?'':'checked'}>対象</label>
+      <button class="delete-btn" data-id="${p.id}" title="削除">×</button>
+      <span class="chevron">▶</span>
+    `;
+    head.addEventListener('click', (e) => {
+      if(e.target.classList.contains('entry-label') || e.target.classList.contains('delete-btn')
+        || e.target.classList.contains('move-btn') || e.target.classList.contains('player-active-check')) return;
+      if(openPlayerIds.has(p.id)) openPlayerIds.delete(p.id); else openPlayerIds.add(p.id);
+      renderPlayers();
+    });
+    entryEl.appendChild(head);
+
+    // ドラッグ並べ替え: 対象/対象外グループ内のみ。移動先の位置にそのまま差し込む
+    attachDragSort(entryEl, head.querySelector('.drag-handle'), isInactive ? 'player-off' : 'player-on', realIdx, (from, to) => {
+      const [moved] = players.splice(from, 1);
+      players.splice(to, 0, moved);
+      savePlayers();
+      renderPlayers();
+    });
+
+    const labelInput = head.querySelector('.entry-label');
+    labelInput.addEventListener('click', e => e.stopPropagation());
+    labelInput.addEventListener('change', () => {
+      p.name = labelInput.value.trim() || p.name;
+      savePlayers();
+    });
+    head.querySelector('.player-starter-star').addEventListener('click', (e) => {
+      e.stopPropagation();
+      p.starter = !p.starter;
+      savePlayers();
+      renderPlayers();
+    });
+    head.querySelector('[data-act="up"]').addEventListener('click', (e) => {
+      e.stopPropagation();
+      movePlayerByDisplayPos(order, dPos, -1);
+    });
+    head.querySelector('[data-act="down"]').addEventListener('click', (e) => {
+      e.stopPropagation();
+      movePlayerByDisplayPos(order, dPos, 1);
+    });
+    head.querySelector('.player-active-check').addEventListener('click', (e) => {
+      e.stopPropagation();
+      const reactivated = isInactive && e.target.checked;
+      p.active = e.target.checked;
+      if(reactivated){
+        // 対象外→対象に戻す時は、対象グループの一番下(=優先度いちばん低い扱い)に送る。
+        // 表示順は「同じactive状態の中でplayers配列内のインデックスが早い順」で決まるので、
+        // pをplayers配列の一番最後に置けば、他のどの対象選手よりindexが大きくなり、
+        // 対象外選手が間に挟まっていても確実に対象グループの最後尾に表示される。
+        // (旧実装はfindIndexで「配列内で最初に見つかった対象外選手」の位置に挿入していたが、
+        //  対象外選手が複数バラバラの位置にいると対象グループの途中に入ってしまうバグがあった)
+        players.splice(realIdx, 1);
+        players.push(p);
+      }
+      savePlayers();
+      renderPlayers();
+    });
+    const delBtn = head.querySelector('.delete-btn');
+    delBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      players = players.filter(x => x.id !== p.id);
+      openPlayerIds.delete(p.id);
+      savePlayers();
+      renderPlayers();
+    });
+
+    const body = document.createElement('div');
+    body.className = 'entry-body';
+
+    const posTitle = document.createElement('div');
+    posTitle.className = 'cat-title';
+    posTitle.textContent = 'ポジション(複数選択可)';
+    posTitle.style.color = 'var(--chalk)';
+    body.appendChild(posTitle);
+    const posGrid = document.createElement('div');
+    posGrid.className = 'skill-grid';
+    posGrid.style.marginBottom = '16px';
+    POSITIONS.forEach(pos => {
+      const on = p.positions.includes(pos);
+      const chip = document.createElement('span');
+      chip.className = `skill-chip pos ${on ? 'on' : ''}`;
+      chip.textContent = pos;
+      chip.addEventListener('click', () => {
+        if(on){ p.positions = p.positions.filter(x => x !== pos); }
+        else{ p.positions.push(pos); }
+        savePlayers();
+        renderPlayers();
+      });
+      posGrid.appendChild(chip);
+    });
+    body.appendChild(posGrid);
+
+    // 現在の追加スキル(最大5、順不同)
+    const curTitle = document.createElement('div');
+    curTitle.className = 'cat-title';
+    curTitle.textContent = '現在の追加スキル(最大5)';
+    curTitle.style.color = 'var(--chalk)';
+    body.appendChild(curTitle);
+    CATEGORIES.forEach(cat => {
+      const catBlock = document.createElement('div');
+      catBlock.className = 'cat-block';
+      const catTitle = document.createElement('div');
+      catTitle.className = `cat-title ${cat.key}`;
+      catTitle.textContent = cat.label;
+      catBlock.appendChild(catTitle);
+      const curGrid = document.createElement('div');
+      curGrid.className = 'skill-grid';
+      cat.skills.forEach(s => {
+        const on = p.currentSkills.includes(s);
+        const disabled = !on && p.currentSkills.length >= 5;
+        const chip = document.createElement('span');
+        chip.className = `skill-chip ${cat.key} ${on ? 'on' : ''} ${disabled ? 'disabled' : ''}`;
+        chip.textContent = s;
+        chip.addEventListener('click', () => {
+          if(on){ p.currentSkills = p.currentSkills.filter(x => x !== s); }
+          else{
+            if(p.currentSkills.length >= 5){ return; }
+            p.currentSkills.push(s);
+          }
+          savePlayers();
+          renderPlayers();
+        });
+        curGrid.appendChild(chip);
+      });
+      catBlock.appendChild(curGrid);
+      body.appendChild(catBlock);
+    });
+
+    // 目標スキル(優先順、候補は最大MAX_TARGET_SKILLS。実際に付けられるのは追加スキル枠5つまで)
+    const tgtTitle = document.createElement('div');
+    tgtTitle.className = 'cat-title';
+    tgtTitle.textContent = `目標スキル(理想・優先順、候補は最大${MAX_TARGET_SKILLS}。追加できるのは枠5つまで、6個目以降は控え候補) — クリックした順が優先度になる`;
+    tgtTitle.style.color = 'var(--chalk)';
+    body.appendChild(tgtTitle);
+
+    const tgtList = document.createElement('div');
+    tgtList.className = 'target-list';
+    if(p.targetSkills.length === 0){
+      tgtList.innerHTML = `<div style="color:var(--muted); font-size:12.5px;">まだ目標スキルが未設定。下のスキル一覧から選んで。</div>`;
+    }else{
+      p.targetSkills.forEach((s, i) => {
+        const row = document.createElement('div');
+        row.className = 'target-row';
+        row.innerHTML = `
+          <span class="drag-handle" title="ドラッグで並べ替え">⠿</span>
+          <span class="target-rank">${i+1}</span>
+          <span class="tname" style="color:var(--${SKILL_TO_CAT[s]||'other'})">${escapeHtml(s)}</span>
+          <button data-act="up" ${i===0?'disabled':''}>↑</button>
+          <button data-act="down" ${i===p.targetSkills.length-1?'disabled':''}>↓</button>
+          <button data-act="del">×</button>
+        `;
+        row.querySelector('[data-act="up"]').addEventListener('click', () => {
+          if(i===0) return;
+          [p.targetSkills[i-1], p.targetSkills[i]] = [p.targetSkills[i], p.targetSkills[i-1]];
+          savePlayers(); renderPlayers();
+        });
+        row.querySelector('[data-act="down"]').addEventListener('click', () => {
+          if(i===p.targetSkills.length-1) return;
+          [p.targetSkills[i+1], p.targetSkills[i]] = [p.targetSkills[i], p.targetSkills[i+1]];
+          savePlayers(); renderPlayers();
+        });
+        row.querySelector('[data-act="del"]').addEventListener('click', () => {
+          p.targetSkills.splice(i, 1);
+          savePlayers(); renderPlayers();
+        });
+        attachDragSort(row, row.querySelector('.drag-handle'), 'target-' + p.id, i, (from, to) => {
+          const [moved] = p.targetSkills.splice(from, 1);
+          p.targetSkills.splice(to, 0, moved);
+          savePlayers(); renderPlayers();
+        });
+        tgtList.appendChild(row);
+      });
+    }
+    body.appendChild(tgtList);
+
+    CATEGORIES.forEach(cat => {
+      const catBlock = document.createElement('div');
+      catBlock.className = 'cat-block';
+      const catTitle = document.createElement('div');
+      catTitle.className = `cat-title ${cat.key}`;
+      catTitle.textContent = cat.label;
+      catBlock.appendChild(catTitle);
+      const tgtGrid = document.createElement('div');
+      tgtGrid.className = 'skill-grid';
+      cat.skills.forEach(s => {
+        const on = p.targetSkills.includes(s);
+        const disabled = !on && p.targetSkills.length >= MAX_TARGET_SKILLS;
+        const chip = document.createElement('span');
+        chip.className = `skill-chip ${cat.key} ${on ? 'on' : ''} ${disabled ? 'disabled' : ''}`;
+        chip.textContent = s;
+        chip.addEventListener('click', () => {
+          if(on){ p.targetSkills = p.targetSkills.filter(x => x !== s); }
+          else{
+            if(p.targetSkills.length >= MAX_TARGET_SKILLS){ return; }
+            p.targetSkills.push(s);
+          }
+          savePlayers();
+          renderPlayers();
+        });
+        tgtGrid.appendChild(chip);
+      });
+      catBlock.appendChild(tgtGrid);
+      body.appendChild(catBlock);
+    });
+
+    entryEl.appendChild(body);
+    squad.appendChild(entryEl);
+  });
+}
+
+document.getElementById('exportPlayersBtn').addEventListener('click', async () => {
+  const statusLine = document.getElementById('playerStatusLine');
+  await saveJsonFile('ronbaruji-manager-players.json', JSON.stringify(players, null, 2), statusLine);
+});
+document.getElementById('importPlayersTrigger').addEventListener('click', () => {
+  document.getElementById('importPlayersInput').click();
+});
+document.getElementById('importPlayersInput').addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try{
+      const data = JSON.parse(reader.result);
+      if(!Array.isArray(data)) throw new Error('形式が違う');
+      if(players.length > 0){
+        const ok = confirm(`今登録されてる${players.length}人を、このファイルの${data.length}人で上書きする。よければOKを押して。`);
+        if(!ok) return;
+      }
+      players = data;
+      savePlayers();
+      renderPlayers();
+    }catch(err){
+      alert('読み込めなかった。選手データのバックアップJSONか確認して。');
+    }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+});
+
+/* ==================================================================
+   GP計算 — 「1個ずつ直で特別強化」vs「同名の育成選手(ロンバルジ/ヴェルレーヌ)
+   同士でスキルをまとめてから対象選手に特別強化(まとめ技)」のGP比較。
+   数値は実測レポート(スキル追加数1〜5個の通常/まとめ技合計GP表)に基づく固定値。
+   まとめ技は「1体にまとめて対象選手1人に渡す」技なので、対象選手ごとに集計する。
+   ================================================================== */
+const GP_DIRECT_PER_SKILL = 257000; // 通常方式: 対象選手への直接特別強化、1スキルあたり
+const GP_CONSOLIDATE_PER_SKILL = 129000; // 応用方式: 同名の育成選手同士でのスキルまとめ、1回あたり
+// 応用方式の仕上げ(まとめ終えた個体→対象選手への特別強化)費用。保有スキル数で変動する
+const GP_FINAL_TRANSFER_BY_COUNT = { 1: 257000, 2: 317000, 3: 341000, 4: 355000, 5: 363000 };
+function computeGPForCount(n){
+  if(n <= 0) return { direct: 0, applied: 0, saved: 0 };
+  const c = Math.min(n, 5);
+  const direct = GP_DIRECT_PER_SKILL * n;
+  const applied = GP_CONSOLIDATE_PER_SKILL * (c - 1) + GP_FINAL_TRANSFER_BY_COUNT[c];
+  return { direct, applied, saved: direct - applied };
+}
+function computeGPCountsFromChecks(){
+  const countByPlayer = {};
+  document.querySelectorAll('.plan-apply-check:checked').forEach(c => {
+    const playerId = c.getAttribute('data-player-id');
+    countByPlayer[playerId] = (countByPlayer[playerId] || 0) + 1;
+  });
+  return countByPlayer;
+}
+function renderGPSection(){
+  const countByPlayer = computeGPCountsFromChecks();
+  let total = 0;
+  Object.values(countByPlayer).forEach(n => { total += computeGPForCount(n).applied; });
+
+  return `<div class="plan-section">
+    <div class="plan-title">■ 想定GP消費(応用方式・まとめ技)</div>
+    <div class="plan-note">同名の育成選手(ロンバルジ/ヴェルレーヌ)同士でスキルを1体にまとめてから(129,000GP/回)、まとめ終えた個体を対象選手へ特別強化する方式(仕上げ費用は保有スキル数で変動)での合計GP目安。まとめ技は対象選手1人ぶんずつしか使えないので、選手ごとに集計してから合算してる。</div>
+    <div style="font-family:'Oswald',sans-serif; font-size:22px; font-weight:600;">${total.toLocaleString()} GP</div>
+  </div>`;
+}
+
+/* ==================================================================
+   特別強化プラン計算 — update_plan.pyと同じマッチングロジックをJSで再現
+   (採用率の代わりに、目標スキルの並び順=優先度スコアを使う)
+   ================================================================== */
+function readEntriesFromStorage(key){
+  try{ return JSON.parse(localStorage.getItem(key) || '[]'); }catch(e){ return []; }
+}
+function buildPoolFromEntries(list){
+  const pool = {};
+  list.forEach(en => { en.skills.forEach(s => { pool[s] = (pool[s]||0) + 1; }); });
+  return pool;
+}
+function runMatching(needList, pool, slotsLeftMap){
+  // 優先度は選手管理タブの並び順のみで決まる(スタメン/控えの区分は割当順に影響しない)
+  const ordered = needList.slice().sort((a,b) => b.score - a.score);
+
+  const remainingPool = {...pool};
+  const slotsLeft = {...slotsLeftMap};
+  const assigned = [];
+  ordered.forEach(n => {
+    if((remainingPool[n.skill]||0) > 0 && slotsLeft[n.playerId] > 0){
+      remainingPool[n.skill] -= 1;
+      slotsLeft[n.playerId] -= 1;
+      assigned.push(n);
+    }
+  });
+  return { ordered, assigned, remainingPool };
+}
+function buildLedger(pool, result){
+  const assignedCount = {};
+  result.assigned.forEach(a => { assignedCount[a.skill] = (assignedCount[a.skill]||0) + 1; });
+  return Object.entries(pool)
+    .sort((a,b) => b[1]-a[1])
+    .map(([skill, original]) => ({ skill, original, used: assignedCount[skill] || 0, left: result.remainingPool[skill] }));
+}
+function consumeIndividualForSkill(skill, isGK){
+  // 特別強化に使ったロンバルジ/ヴェルレーヌ個体は実際のゲームでもその場で消滅するので、
+  // スキルを1個外すだけでなく個体ごとentriesから削除する。
+  // 他のスキルを巻き添えで失わないよう、保有スキル数が少ない個体から優先的に消費する
+  const candidates = entries.filter(en => en.isGK === isGK && en.skills.includes(skill));
+  if(candidates.length === 0) return false;
+  candidates.sort((a, b) => a.skills.length - b.skills.length);
+  const targetId = candidates[0].id;
+  entries = entries.filter(en => en.id !== targetId);
+  return true;
+}
+// 目標スキルに入っていない現在の追加スキル(枠が埋まった時に外して差し替えられる候補)
+function replaceableSkills(p){
+  return p.currentSkills.filter(s => !p.targetSkills.includes(s));
+}
+function applySelectedSkills(selections){
+  let applied = 0;
+  selections.forEach(({ playerId, skill }) => {
+    const p = players.find(pl => pl.id === playerId);
+    if(!p || p.currentSkills.includes(skill)) return;
+    const full = p.currentSkills.length >= 5;
+    const dropSkill = full ? replaceableSkills(p)[0] : null;
+    if(full && !dropSkill) return;
+    const isGK = (p.positions||[]).includes('GK');
+    if(!consumeIndividualForSkill(skill, isGK)) return;
+    if(dropSkill) p.currentSkills = p.currentSkills.filter(s => s !== dropSkill); // 外したスキルは在庫に戻らない
+    p.currentSkills.push(skill);
+    applied++;
+  });
+  if(applied > 0){
+    savePlayers();
+    saveEntries();
+  }
+  return applied;
+}
+function buildGap(result){
+  const assignedKeySet = new Set(result.assigned.map(a => a.skill + '::' + a.playerId));
+  const gapMap = {};
+  result.ordered.forEach(n => {
+    const key = n.skill + '::' + n.playerId;
+    if(assignedKeySet.has(key)) return;
+    if((result.remainingPool[n.skill]||0) > 0) return; // 在庫が余ってるのに未割当=枠不足であって在庫不足ではない
+    const d = gapMap[n.skill] = gapMap[n.skill] || { starters: 0, bench: 0, examples: [] };
+    if(n.starter) d.starters += 1; else d.bench += 1;
+    if(d.examples.length < 6) d.examples.push(n.playerName);
+  });
+  return Object.entries(gapMap).sort((a,b) => (b[1].starters*2+b[1].bench) - (a[1].starters*2+a[1].bench));
+}
+// 候補が複数いるスキルで「この選手に優先して付ける」と選んだ選手のid一覧。キーは 'スキル名::field|gk'。
+// 選ばれた選手は割当の優先度に大きな加点が入り、他の選手より先に在庫を取る(選ばなければ従来通り並び順)
+let planPriority = {};
+function planPriorityKey(skill, isGK){ return skill + '::' + (isGK ? 'gk' : 'field'); }
+function computePlan(){
+  // ロンバルジ=フィールド選手専用、ヴェルレーヌ=GK専用。ポジション不一致で相互流用できないため
+  // 在庫は同じ表(entries)で管理しつつ、個体のisGKフラグでプールを分けて計算する
+  const allList = readEntriesFromStorage(STORAGE_KEY);
+  const ronbarujiList = allList.filter(en => !en.isGK);
+  const verlaineList = allList.filter(en => en.isGK);
+  const ronbarujiPool = buildPoolFromEntries(ronbarujiList);
+  const verlainePool = buildPoolFromEntries(verlaineList);
+
+  const fieldNeed = [];
+  const gkNeed = [];
+  const slotsLeftMap = {};
+  // 優先度は選手管理タブの並び順(players配列のindex)がそのまま決める。並び順の重みを
+  // 目標スキルの並び順(1人の中での優先度)より大きくして、選手の優先度を最優先にする
+  players.forEach((p, rank) => {
+    if(p.active === false) return; // 対象外の選手は需要計算から完全に除外
+    // ゲーム内ではGP無しで追加スキルを外せるので、目標外の現在スキルは空き枠として数える
+    slotsLeftMap[p.id] = 5 - p.currentSkills.length + replaceableSkills(p).length;
+    if(slotsLeftMap[p.id] <= 0) return;
+    const isGK = (p.positions||[]).includes('GK');
+    p.targetSkills.forEach((skill, idx) => {
+      if(p.currentSkills.includes(skill)) return;
+      const base = (players.length - rank) * 100 + (p.targetSkills.length - idx);
+      const picked = (planPriority[planPriorityKey(skill, isGK)] || []).includes(p.id);
+      const score = base + (picked ? 1000000 : 0);
+      const item = { skill, playerId: p.id, playerName: p.name, score, base, picked, starter: p.starter };
+      (isGK ? gkNeed : fieldNeed).push(item);
+    });
+  });
+
+  const fieldResult = runMatching(fieldNeed, ronbarujiPool, slotsLeftMap);
+  const gkResult = runMatching(gkNeed, verlainePool, slotsLeftMap);
+
+  const byPlayer = {};
+  fieldResult.assigned.concat(gkResult.assigned).forEach(a => {
+    (byPlayer[a.playerId] = byPlayer[a.playerId] || []).push(a);
+  });
+
+  // 在庫があって候補が2人以上いるスキル。誰に付けるかをプラン画面で選ばせる
+  function buildMultiCandidates(needList, pool, result, isGK){
+    const assignedKeys = new Set(result.assigned.map(a => a.skill + '::' + a.playerId));
+    const bySkill = {};
+    needList.forEach(n => { (bySkill[n.skill] = bySkill[n.skill] || []).push(n); });
+    return Object.entries(bySkill)
+      .filter(([skill, list]) => list.length >= 2 && (pool[skill] || 0) > 0)
+      .map(([skill, list]) => ({
+        skill, isGK, stock: pool[skill],
+        players: list.slice().sort((a, b) => b.base - a.base).map(n => ({
+          id: n.playerId, name: n.playerName, starter: n.starter, picked: n.picked,
+          assigned: assignedKeys.has(n.skill + '::' + n.playerId)
+        }))
+      }));
+  }
+  const multiCandidates = buildMultiCandidates(fieldNeed, ronbarujiPool, fieldResult, false)
+    .concat(buildMultiCandidates(gkNeed, verlainePool, gkResult, true))
+    .sort((a, b) => b.players.length - a.players.length || a.skill.localeCompare(b.skill, 'ja'));
+
+  return {
+    byPlayer,
+    multiCandidates,
+    ronbarujiLedger: buildLedger(ronbarujiPool, fieldResult),
+    verlaineLedger: buildLedger(verlainePool, gkResult),
+    ronbarujiGap: buildGap(fieldResult),
+    verlaineGap: buildGap(gkResult),
+    ronbarujiTotal: ronbarujiList.length,
+    verlaineTotal: verlaineList.length
+  };
+}
+// ヴェルレーヌ(GK用)のトレーニングの目安: 対象GK選手が「付けたいスキル(目標スキル)」のうち
+// 現在庫では埋まらない分をそのまま一覧化する。GK選手の目標スキルはポジションで判定しているだけで
+// スキルの種類(カテゴリ)は問わない仕様のため、「ゴールキーパー系」4スキルに絞り込んではいけない
+// (絞り込むと、GK選手が目標にした他カテゴリのスキルが一覧から丸ごと消えて0件扱いになってしまう)。
+// ロンバルジ側は毎回ランダムでスキルを付ける運用のため対象外(ユーザー方針)。
+function computeGKSkillNeed(){
+  if(players.length === 0) return [];
+  const { verlaineGap } = computePlan();
+  // スタメン/控えは区別せず、不足数として合算する(ユーザー方針)
+  return verlaineGap
+    .map(([skill, d]) => ({ skill, count: d.starters + d.bench }))
+    .sort((a, b) => b.count - a.count);
+}
+// GK選手の不足スキルをカテゴリ単位(SKILL_TO_CAT)で集計する。
+// verlaineGapの中身はカテゴリを問わない(GK選手はゴールキーパー系以外のスキルも目標にできる)ため、
+// トレーニング時にどのカテゴリを選ぶといいかの目安として別途カテゴリ集計を出す
+function computeGKCategoryNeed(){
+  const bySkill = computeGKSkillNeed();
+  const byCategory = {};
+  bySkill.forEach(({ skill, count }) => {
+    const catKey = SKILL_TO_CAT[skill];
+    if(!catKey) return;
+    byCategory[catKey] = (byCategory[catKey] || 0) + count;
+  });
+  return Object.entries(byCategory)
+    .map(([key, count]) => ({ key, label: CATEGORIES.find(c => c.key === key).label, count }))
+    .sort((a, b) => b.count - a.count);
+}
+let gkNeedCollapsed = false;
+try{ gkNeedCollapsed = localStorage.getItem('gkNeedCollapsed') === 'true'; }catch(e){}
+
+function renderGKSkillNeed(){
+  const box = document.getElementById('gkSkillNeedBox');
+  if(!box) return;
+  box.classList.toggle('collapsed', gkNeedCollapsed);
+  const rows = computeGKSkillNeed();
+  const catRows = computeGKCategoryNeed();
+  let html = `<div class="gk-need-title" id="gkNeedToggle">
+    <span class="gk-need-arrow">${gkNeedCollapsed ? '▶' : '▼'}</span>■ ヴェルレーヌ トレーニングの目安(GK選手が付けたいスキルの不足)
+  </div>`;
+  html += `<div class="gk-need-body">`;
+  if(rows.length === 0){
+    html += `<div class="gk-need-empty">今のところ在庫不足のスキルはない。</div>`;
+  }else{
+    html += `<table class="gk-need-table"><thead><tr><th>スキル名</th><th>不足数</th></tr></thead><tbody>
+      ${rows.map((d, i) => `<tr class="${i===0?'top':''}">
+        <td>${escapeHtml(d.skill)}${i===0?' <span class="gk-need-top-badge">★おすすめ</span>':''}</td>
+        <td>${d.count}</td>
+      </tr>`).join('')}
+      </tbody></table>`;
+  }
+  html += `<div class="gk-need-subtitle">▶ どのカテゴリでトレーニングするといいか</div>`;
+  if(catRows.length === 0){
+    html += `<div class="gk-need-empty">今のところ不足しているカテゴリはない。</div>`;
+  }else{
+    html += `<table class="gk-need-table"><thead><tr><th>カテゴリ</th><th>不足数(合計)</th></tr></thead><tbody>
+      ${catRows.map((d, i) => `<tr class="${i===0?'top':''}">
+        <td>${escapeHtml(d.label)}${i===0?' <span class="gk-need-top-badge">★おすすめ</span>':''}</td>
+        <td>${d.count}</td>
+      </tr>`).join('')}
+      </tbody></table>`;
+  }
+  html += `</div>`;
+  box.innerHTML = html;
+  document.getElementById('gkNeedToggle').addEventListener('click', () => {
+    gkNeedCollapsed = !gkNeedCollapsed;
+    try{ localStorage.setItem('gkNeedCollapsed', String(gkNeedCollapsed)); }catch(e){}
+    renderGKSkillNeed();
+  });
+}
+
+function renderLedgerSection(title, ledger){
+  const changed = ledger.filter(l => l.used > 0);
+  let html = `<div class="plan-section">
+    <div class="plan-title">■ ${title}(今回変化があったスキルのみ)</div>
+    <table class="plan-table"><thead><tr><th>スキル名</th><th>保有数</th><th>今回割当数</th><th>残数</th><th>状態</th></tr></thead><tbody>`;
+  changed.forEach(l => {
+    const status = l.left === 0 ? '使い切り' : '一部使用';
+    html += `<tr class="${l.left===0?'used-up':''}">
+      <td>${escapeHtml(l.skill)}</td><td>${l.original}</td><td>${l.used}</td><td>${l.left}</td><td>${status}</td>
+    </tr>`;
+  });
+  if(changed.length === 0){ html += `<tr><td colspan="5">今回割り当てが発生したスキルはない</td></tr>`; }
+  html += `</tbody></table></div>`;
+  return html;
+}
+function renderGapSection(title, gapSorted){
+  let html = `<div class="plan-section">
+    <div class="plan-title">■ ${title}(優先育成候補)</div>
+    <table class="plan-table"><thead><tr><th>スキル名</th><th>スタメンの需要</th><th>控えの需要</th><th>該当選手</th></tr></thead><tbody>`;
+  gapSorted.forEach(([skill, d]) => {
+    html += `<tr><td>${escapeHtml(skill)}</td><td>${d.starters}</td><td>${d.bench}</td><td>${d.examples.map(escapeHtml).join('、')}</td></tr>`;
+  });
+  if(gapSorted.length === 0){ html += `<tr><td colspan="4">在庫不足の需要はない</td></tr>`; }
+  html += `</tbody></table></div>`;
+  return html;
+}
+// 現在スキルを目標スキルの並び順に揃える。目標外のスキル(差し替え候補)は末尾に回す
+function sortByTargetOrder(skills, targets){
+  const rank = s => { const i = targets.indexOf(s); return i < 0 ? targets.length : i; };
+  return skills.slice().sort((a, b) => rank(a) - rank(b));
+}
+function renderPlan(){
+  const out = document.getElementById('planOutput');
+  if(players.length === 0){
+    out.innerHTML = `<div class="empty-state"><p>まだ選手が登録されてない。先に「選手管理」タブで選手と目標スキルを登録して。</p></div>`;
+    return;
+  }
+  const { byPlayer, multiCandidates, ronbarujiLedger, verlaineLedger, ronbarujiGap, verlaineGap, ronbarujiTotal, verlaineTotal } = computePlan();
+
+  const orderedPlayers = players.filter(p => (byPlayer[p.id] || []).length > 0);
+
+  let html = '';
+
+  html += `<div class="plan-section">
+    <div class="plan-title">■ 候補が複数いるスキル(誰に付けるか選ぶ)</div>
+    <div class="plan-note">チェックした選手が優先して在庫を取る。チェックなしの選手は選手管理タブの並び順。在庫数を超えてチェックすると、最初にチェックした選手が外れる。緑=今のプランで割当予定</div>
+    <table class="plan-table"><thead><tr><th>スキル名</th><th>在庫</th><th>候補の選手</th></tr></thead><tbody>`;
+  multiCandidates.forEach(d => {
+    html += `<tr><td>${escapeHtml(d.skill)}${d.isGK ? ' <span class="gk-need-top-badge">(GK)</span>' : ''}</td><td>${d.stock}</td><td>${
+      d.players.map(pl => `<label class="pill ${pl.assigned ? 'green' : ''} plan-check"><input type="checkbox" class="plan-pick-check" data-skill="${escapeHtml(d.skill)}" data-gk="${d.isGK ? 1 : 0}" data-stock="${d.stock}" data-player-id="${pl.id}" ${pl.picked ? 'checked' : ''}>${pl.starter ? '★' : ''}${escapeHtml(pl.name)}</label>`).join('')
+    }</td></tr>`;
+  });
+  if(multiCandidates.length === 0){ html += `<tr><td colspan="3">在庫があって候補が複数いるスキルはない</td></tr>`; }
+  html += `</tbody></table></div>`;
+
+  html += `<div class="plan-section">
+    <div class="plan-title">■ 選手別サマリー(選手管理タブの並び順=優先度で配分)</div>
+    <div class="plan-note">供給=ロンバルジ在庫${ronbarujiTotal}体(フィールド用)+ヴェルレーヌ在庫${verlaineTotal}体(GK用) / 需要=各選手の「目標スキル」のうち未装備の分(対象外にした選手は含まない)</div>
+    <table class="plan-table"><thead><tr>
+      <th>選手名</th><th>ポジション</th><th>起用</th><th>現在の追加スキル</th><th>一致数</th><th>目標スキル(優先順)</th><th>今すぐ追加で特別強化できるスキル</th>
+    </tr></thead><tbody>`;
+  orderedPlayers.forEach(p => {
+    const matchCount = p.targetSkills.filter(s => p.currentSkills.includes(s)).length;
+    const addList = byPlayer[p.id] || [];
+    let addText = addList.length
+      ? addList.map(a => `<label class="pill green plan-check"><input type="checkbox" class="plan-apply-check" data-player-id="${p.id}" data-skill="${escapeHtml(a.skill)}" checked>${escapeHtml(a.skill)}</label>`).join('')
+      : '(なし)';
+    // 空き枠が足りない分は、目標外の現在スキルを先頭から外して差し替える(applySelectedSkillsと同じ順)
+    const dropCount = Math.max(0, addList.length - (5 - p.currentSkills.length));
+    if(dropCount > 0){
+      addText += `<div class="plan-note" style="margin-top:6px;" title="枠が埋まってるから先に外す。目標外のスキルで、GPは不要。チェックした分だけ先頭から外す">${replaceableSkills(p).slice(0, dropCount).map(s => `🔁 <span class="pill">${escapeHtml(s)}</span>`).join(' ')}</div>`;
+    }
+    html += `<tr class="${p.starter?'is-starter':''}">
+      <td>${escapeHtml(p.name)}</td>
+      <td>${escapeHtml(p.positions.join('/')||'')}</td>
+      <td class="starter-star-cell" title="${p.starter?'スタメン':'控え'}">${p.starter?'★':'☆'}</td>
+      <td>${sortByTargetOrder(p.currentSkills, p.targetSkills).map(s=>`<span class="pill">${escapeHtml(s)}</span>`).join('') || '(なし)'}</td>
+      <td>${matchCount}/${p.targetSkills.length}</td>
+      <td>${p.targetSkills.map(s=>`<span class="pill">${escapeHtml(s)}</span>`).join('') || '(未設定)'}</td>
+      <td>${addText}</td>
+    </tr>`;
+  });
+  if(orderedPlayers.length === 0){
+    html += `<tr><td colspan="7">今すぐ特別強化できるスキルがある選手はいない(在庫が足りないか、全員目標スキルを満たしてる)</td></tr>`;
+  }
+  html += `</tbody></table>
+    <div class="plan-apply-bar">
+      <span class="status-line" id="applyStatusLine" style="margin:0;"></span>
+      <button class="add-btn" id="applyPlanBtn" type="button">選択した分を反映する</button>
+    </div>
+  </div>`;
+
+  html += `<div id="gpSummaryBox"></div>`;
+  html += `<div id="ronbarujiLedgerBox">${renderLedgerSection('ロンバルジ在庫台帳', ronbarujiLedger)}</div>`;
+  html += `<div id="verlaineLedgerBox">${renderLedgerSection('ヴェルレーヌ在庫台帳', verlaineLedger)}</div>`;
+  // 優先育成候補: ロンバルジ/ヴェルレーヌに付与されるスキルはランダムでコントロールできないため一旦非表示。
+  // 復活させる場合は下の2行のコメントを外すだけでいい(computePlan側の計算はそのまま残してある)
+  // html += renderGapSection('ロンバルジ側で在庫0のまま需要が残るスキル', ronbarujiGap);
+  // html += renderGapSection('ヴェルレーヌ側で在庫0のまま需要が残るスキル', verlaineGap);
+
+  out.innerHTML = html;
+  // gpSummaryBoxはチェックボックスのDOM状態(このhtmlをinnerHTMLに反映した後の状態)を読むため、
+  // 挿入が終わってから描画する(挿入前に読むと1つ前のDOM=古い状態を見てしまい空扱いになるバグがあった)
+  document.getElementById('gpSummaryBox').innerHTML = renderGPSection();
+  document.getElementById('planStatusLine').textContent = '計算した時点の在庫・選手データを反映してる';
+}
+function computeLedgerFromChecks(){
+  const allList = readEntriesFromStorage(STORAGE_KEY);
+  const ronbarujiPool = buildPoolFromEntries(allList.filter(en => !en.isGK));
+  const verlainePool = buildPoolFromEntries(allList.filter(en => en.isGK));
+
+  const usedRonbaruji = {};
+  const usedVerlaine = {};
+  document.querySelectorAll('.plan-apply-check:checked').forEach(c => {
+    const skill = c.getAttribute('data-skill');
+    const p = players.find(pl => pl.id === c.getAttribute('data-player-id'));
+    if(!p) return;
+    const bucket = (p.positions||[]).includes('GK') ? usedVerlaine : usedRonbaruji;
+    bucket[skill] = (bucket[skill] || 0) + 1;
+  });
+
+  function toLedger(pool, used){
+    return Object.entries(pool)
+      .sort((a, b) => b[1] - a[1])
+      .map(([skill, original]) => {
+        const u = Math.min(used[skill] || 0, original);
+        return { skill, original, used: u, left: original - u };
+      });
+  }
+  return { ronbarujiLedger: toLedger(ronbarujiPool, usedRonbaruji), verlaineLedger: toLedger(verlainePool, usedVerlaine) };
+}
+function refreshLedgersLive(){
+  const { ronbarujiLedger, verlaineLedger } = computeLedgerFromChecks();
+  const rBox = document.getElementById('ronbarujiLedgerBox');
+  const vBox = document.getElementById('verlaineLedgerBox');
+  if(rBox) rBox.innerHTML = renderLedgerSection('ロンバルジ在庫台帳', ronbarujiLedger);
+  if(vBox) vBox.innerHTML = renderLedgerSection('ヴェルレーヌ在庫台帳', verlaineLedger);
+  const gBox = document.getElementById('gpSummaryBox');
+  if(gBox) gBox.innerHTML = renderGPSection();
+}
+document.getElementById('recalcBtn').addEventListener('click', renderPlan);
+document.getElementById('planOutput').addEventListener('change', (e) => {
+  if(e.target.classList.contains('plan-apply-check')) refreshLedgersLive();
+  if(e.target.classList.contains('plan-pick-check')){
+    // 優先選手の選択を保存してプランを再計算する。再描画で反映チェックが全部ONに戻るので、外していた分は復元する
+    const unchecked = Array.from(document.querySelectorAll('.plan-apply-check:not(:checked)'))
+      .map(c => c.getAttribute('data-player-id') + '::' + c.getAttribute('data-skill'));
+    const key = planPriorityKey(e.target.getAttribute('data-skill'), e.target.getAttribute('data-gk') === '1');
+    const id = e.target.getAttribute('data-player-id');
+    const stock = Number(e.target.getAttribute('data-stock'));
+    // チェック順を保ったまま、在庫数を超えたら最初にチェックした選手から外す(いま表示中の候補だけ数える)
+    const shown = new Set(Array.from(document.querySelectorAll('.plan-pick-check'))
+      .filter(c => planPriorityKey(c.getAttribute('data-skill'), c.getAttribute('data-gk') === '1') === key)
+      .map(c => c.getAttribute('data-player-id')));
+    let list = (planPriority[key] || []).filter(x => shown.has(x) && x !== id);
+    if(e.target.checked) list.push(id);
+    while(list.length > stock) list.shift();
+    planPriority[key] = list;
+    renderPlan();
+    document.querySelectorAll('.plan-apply-check').forEach(c => {
+      if(unchecked.includes(c.getAttribute('data-player-id') + '::' + c.getAttribute('data-skill'))) c.checked = false;
+    });
+    refreshLedgersLive();
+  }
+});
+document.getElementById('planOutput').addEventListener('click', async (e) => {
+  if(e.target.id !== 'applyPlanBtn') return;
+  const checks = Array.from(document.querySelectorAll('.plan-apply-check:checked'));
+  if(checks.length === 0){
+    alert('反映するスキルが選択されてない。');
+    return;
+  }
+  const selections = checks.map(c => ({ playerId: c.getAttribute('data-player-id'), skill: c.getAttribute('data-skill') }));
+  if(!confirm(`${selections.length}件のスキルを反映する。対応する在庫からも減るし、枠が埋まってる選手は目標外のスキルを外して差し替えるけどよい?`)) return;
+  const applied = applySelectedSkills(selections);
+  planPriority = {}; // 反映後は在庫も候補も変わるので、優先選択はリセットする
+  render();
+  renderPlayers();
+  renderPlan();
+  const planStatus = document.getElementById('planStatusLine');
+  planStatus.textContent = `${applied}件を反映した(在庫・選手データ更新済み)。書き出し中…`;
+  try{
+    await saveJsonFile('ronbaruji-backup-latest.json', JSON.stringify(entries, null, 2), null);
+    await saveJsonFile('ronbaruji-manager-players.json', JSON.stringify(players, null, 2), null);
+    planStatus.textContent = `${applied}件を反映して、在庫・選手データを書き出した` + (saveDirHandle ? `(${saveDirHandle.name} フォルダ)` : '(ダウンロードフォルダ)');
+  }catch(err){
+    planStatus.textContent = `${applied}件を反映した。ただし書き出しに失敗したから、各タブの「書き出す」で手動保存して。`;
+  }
+});
+
+/* ==================================================================
+   初期化
+   ================================================================== */
+loadEntries();
+loadPlayers();
+restoreSaveDir();
+
+/* ---- PWA: Service Worker登録 / 非対応ブラウザでは保存先フォルダ設定を隠す ---- */
+if(!window.showDirectoryPicker){
+  const b = document.getElementById('setSaveDirBtn'); if(b) b.style.display = 'none';
+  const l = document.getElementById('saveDirLabel'); if(l) l.style.display = 'none';
+}
+if('serviceWorker' in navigator && location.protocol.startsWith('http')){
+  window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(()=>{}); });
+}
+</script>
+</body>
+</html>
