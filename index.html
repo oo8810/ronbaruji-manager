@@ -578,6 +578,7 @@
   .pill.plan-check input{margin:0; cursor:pointer;}
   .plan-apply-bar{display:flex; align-items:center; justify-content:flex-end; gap:10px; margin:10px 0 0;}
 
+  .row-break{display:none;}
   @supports (padding: env(safe-area-inset-top)){
     .wrap{padding-top:calc(36px + env(safe-area-inset-top)); padding-bottom:calc(80px + env(safe-area-inset-bottom));}
   }
@@ -598,6 +599,47 @@
     table.plan-table th{white-space:nowrap;}
     table.plan-table td:first-child{min-width:7em;}
     input, select, textarea{font-size:16px;} /* iOSで入力時に勝手に拡大されるのを防ぐ */
+
+    /* 在庫: 閉じてる間は1行(番号・スキル・削除)。名前欄は開いたときだけ出す。フィールドタグと「Nスキル」は省く */
+    .entry:not(.player-entry) > .entry-head{padding:9px 12px;}
+    .entry-head > .starter-badge.bench{display:none;}
+    .entry:not(.player-entry) .entry-skillcount{display:none;}
+    .entry:not(.open):not(.player-entry) > .entry-head > .entry-label{display:none;}
+    .entry:not(.player-entry) > .entry-head > .delete-btn{order:1; margin-left:auto;}
+    .entry:not(.player-entry) > .entry-head > .entry-label{order:2;}
+
+    /* 選手管理: 2行にまとめる(1行目=順位・★・名前・ポジション・▶ / 2行目=現在/目標・対象・↑↓・削除) */
+    .player-head{padding:8px 10px; gap:4px 8px;}
+    .player-head .row-break{display:block; flex-basis:100%; height:0; order:7;}
+    .player-head .drag-handle{order:1;}
+    .player-head .entry-num{order:2; min-width:0;}
+    .player-head .player-starter-star{order:3;}
+    .player-head .entry-label{order:4; flex:1 1 0 !important; min-width:0; max-width:none !important;}
+    .player-head .p-pos{order:5;}
+    .player-head .chevron{order:6; width:24px;}
+    .player-head .p-cnt{order:8;}
+    .player-head .player-active-toggle{order:9;}
+    .player-head .move-btn[data-act="up"]{order:10;}
+    .player-head .move-btn[data-act="down"]{order:11;}
+    .player-head .delete-btn{order:12; margin-left:auto;}
+
+    /* 選手別サマリー: 表をカード表示にする */
+    table.summary-table{display:block; overflow:visible;}
+    table.summary-table thead{display:none;}
+    table.summary-table tbody{display:block;}
+    table.summary-table tr{display:flex; flex-wrap:wrap; align-items:baseline; gap:2px 8px; background:var(--panel); border:1px solid var(--line); padding:9px 12px; margin-bottom:8px;}
+    table.summary-table tr.is-starter{border-left:2px solid var(--accent);}
+    table.summary-table td{display:block; border:0; padding:0;}
+    table.summary-table td:first-child{min-width:0;}
+    table.summary-table td.c-star{order:1;}
+    table.summary-table td.c-name{order:2; font-size:16px; font-weight:500;}
+    table.summary-table td.c-pos{order:3; color:var(--muted); font-size:12.5px;}
+    table.summary-table td.c-match{order:4; margin-left:auto; color:var(--muted); font-size:12.5px;}
+    table.summary-table td.c-add{order:5; flex-basis:100%; margin-top:6px;}
+    table.summary-table td.c-cur{order:6; flex-basis:100%;}
+    table.summary-table td.c-tgt{order:7; flex-basis:100%;}
+    table.summary-table td.c-match::before{content:none;}
+    table.summary-table td[data-label]:not(.c-match)::before{content:attr(data-label); display:block; font-size:11px; color:var(--muted); margin-top:4px;}
   }
 </style>
 </head>
@@ -1257,7 +1299,7 @@ function renderPlayers(){
 
     const isOpen = openPlayerIds.has(p.id);
     const entryEl = document.createElement('div');
-    entryEl.className = 'entry' + (isOpen ? ' open' : '') + (isInactive ? ' inactive' : '');
+    entryEl.className = 'entry player-entry' + (isOpen ? ' open' : '') + (isInactive ? ' inactive' : '');
 
     const prevRealIdx = dPos > 0 ? order[dPos-1] : null;
     const nextRealIdx = dPos < order.length-1 ? order[dPos+1] : null;
@@ -1265,16 +1307,17 @@ function renderPlayers(){
     const canMoveDown = nextRealIdx !== null && (players[nextRealIdx].active === false) === isInactive;
 
     const head = document.createElement('div');
-    head.className = 'entry-head';
+    head.className = 'entry-head player-head';
     head.innerHTML = `
       <span class="drag-handle" title="ドラッグで並べ替え">⠿</span>
       <span class="entry-num">優先${dPos+1}</span>
       <button class="move-btn" data-act="up" title="優先度を上げる" ${canMoveUp?'':'disabled'}>↑</button>
       <button class="move-btn" data-act="down" title="優先度を下げる" ${canMoveDown?'':'disabled'}>↓</button>
       <span class="player-starter-star ${p.starter ? 'starter' : 'bench'}" title="${p.starter ? 'スタメン' : '控え'}(クリックで切替)">${p.starter ? '★' : '☆'}</span>
-      <span class="entry-skillcount">${escapeHtml(p.positions.join('/')||'ポジション未設定')}</span>
+      <span class="entry-skillcount p-pos">${escapeHtml(p.positions.join('/')||'ポジション未設定')}</span>
       <input class="entry-label" value="${escapeHtml(p.name)}" data-id="${p.id}" style="max-width:180px; flex:none;">
-      <span class="entry-skillcount">現在${p.currentSkills.length}・目標${p.targetSkills.length}</span>
+      <span class="row-break"></span>
+      <span class="entry-skillcount p-cnt">現在${p.currentSkills.length}・目標${p.targetSkills.length}</span>
       <label class="player-active-toggle"><input type="checkbox" class="player-active-check" ${p.active===false?'':'checked'}>対象</label>
       <button class="delete-btn" data-id="${p.id}" title="削除">×</button>
       <span class="chevron">▶</span>
@@ -1836,7 +1879,7 @@ function renderPlan(){
   html += `<div class="plan-section">
     <div class="plan-title">■ 選手別サマリー(選手管理タブの並び順=優先度で配分)</div>
     <div class="plan-note">供給=ロンバルジ在庫${ronbarujiTotal}体(フィールド用)+ヴェルレーヌ在庫${verlaineTotal}体(GK用) / 需要=各選手の「目標スキル」のうち未装備の分(対象外にした選手は含まない)</div>
-    <table class="plan-table"><thead><tr>
+    <table class="plan-table summary-table"><thead><tr>
       <th>選手名</th><th>ポジション</th><th>起用</th><th>現在の追加スキル</th><th>一致数</th><th>目標スキル(優先順)</th><th>今すぐ追加で特別強化できるスキル</th>
     </tr></thead><tbody>`;
   orderedPlayers.forEach(p => {
@@ -1851,13 +1894,13 @@ function renderPlan(){
       addText += `<div class="plan-note" style="margin-top:6px;" title="枠が埋まってるから先に外す。目標外のスキルで、GPは不要。チェックした分だけ先頭から外す">${replaceableSkills(p).slice(0, dropCount).map(s => `🔁 <span class="pill">${escapeHtml(s)}</span>`).join(' ')}</div>`;
     }
     html += `<tr class="${p.starter?'is-starter':''}">
-      <td>${escapeHtml(p.name)}</td>
-      <td>${escapeHtml(p.positions.join('/')||'')}</td>
-      <td class="starter-star-cell" title="${p.starter?'スタメン':'控え'}">${p.starter?'★':'☆'}</td>
-      <td>${sortByTargetOrder(p.currentSkills, p.targetSkills).map(s=>`<span class="pill">${escapeHtml(s)}</span>`).join('') || '(なし)'}</td>
-      <td>${matchCount}/${p.targetSkills.length}</td>
-      <td>${p.targetSkills.map(s=>`<span class="pill">${escapeHtml(s)}</span>`).join('') || '(未設定)'}</td>
-      <td>${addText}</td>
+      <td class="c-name">${escapeHtml(p.name)}</td>
+      <td class="c-pos">${escapeHtml(p.positions.join('/')||'')}</td>
+      <td class="starter-star-cell c-star" title="${p.starter?'スタメン':'控え'}">${p.starter?'★':'☆'}</td>
+      <td class="c-cur" data-label="現在">${sortByTargetOrder(p.currentSkills, p.targetSkills).map(s=>`<span class="pill">${escapeHtml(s)}</span>`).join('') || '(なし)'}</td>
+      <td class="c-match" data-label="一致">${matchCount}/${p.targetSkills.length}</td>
+      <td class="c-tgt" data-label="目標">${p.targetSkills.map(s=>`<span class="pill">${escapeHtml(s)}</span>`).join('') || '(未設定)'}</td>
+      <td class="c-add" data-label="今すぐ強化">${addText}</td>
     </tr>`;
   });
   if(orderedPlayers.length === 0){
