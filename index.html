@@ -11,11 +11,11 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <title>eFootball Skill Planner — Lombardi/Verlaine Squad Enhancement Manager</title>
-<meta name="description" content="Set each player's target skills and this figures out who gets what from your Lombardi/Verlaine stock, plus a GP cost comparison for skill fusion. Free, no login, no ads — everything stays on your device.">
+<meta name="description" content="Set each player's target skills and this figures out who gets what from your Lombardi/Verlaine stock, plus the GP cost to fuse it all. Free, no login, no ads — everything stays on your device.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://oo8810.github.io/ronbaruji-manager/">
 <meta property="og:title" content="eFootball Skill Planner — Lombardi/Verlaine Squad Enhancement Manager">
-<meta property="og:description" content="Set each player's target skills and this figures out who gets what from your Lombardi/Verlaine stock, plus a GP cost comparison for skill fusion. Free, no login, no ads — everything stays on your device.">
+<meta property="og:description" content="Set each player's target skills and this figures out who gets what from your Lombardi/Verlaine stock, plus the GP cost to fuse it all. Free, no login, no ads — everything stays on your device.">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%20100%20100%27%3E%3Crect%20width=%27100%27%20height=%27100%27%20rx=%2722%27%20fill=%27%233CB554%27/%3E%3Cg%20transform=%27translate%283.75%2016.5%29%20scale%280.75%29%27%20fill=%27%23FFFFFF%27%3E%3Cpath%20d=%27M24%2064L24%2044Q24%2040%2028%2040L40%2040Q44%2040%2046%2044L50%2050Q54%2055%2060%2056L72%2059Q78%2061%2078%2065L78%2066L24%2066Z%27/%3E%3Crect%20x=%2728%27%20y=%2770%27%20width=%277%27%20height=%277%27%20rx=%271.5%27/%3E%3Crect%20x=%2746%27%20y=%2770%27%20width=%277%27%20height=%277%27%20rx=%271.5%27/%3E%3Crect%20x=%2765%27%20y=%2770%27%20width=%277%27%20height=%277%27%20rx=%271.5%27/%3E%3C/g%3E%3Ccircle%20cx=%2768%27%20cy=%2733%27%20r=%2722%27%20fill=%27%2316200F%27%20stroke=%27%233CB554%27%20stroke-width=%273%27/%3E%3Cpath%20d=%27M57%2033L65.3%2041.3L80.4%2023.4%27%20fill=%27none%27%20stroke=%27%23FFFFFF%27%20stroke-width=%277%27%20stroke-linecap=%27round%27%20stroke-linejoin=%27round%27/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -734,7 +734,7 @@ const STR = {
   ja: {
     pageTitle: '特別強化管理(選手×ロンバルジ)',
     headerTitle: '特別強化管理',
-    headerSubtitle: '選手ごとに目標スキルを優先順位つきで決めるだけで、手持ちのロンバルジ/ヴェルレーヌから誰に何を付けるか自動で割り振る(直接 vs まとめ技のGP比較つき・外部DBなし)',
+    headerSubtitle: '選手ごとに目標スキルを優先順位つきで決めるだけで、手持ちのロンバルジ/ヴェルレーヌから誰に何を付けるか自動で割り振る(特別強化のGP消費も計算・外部DBなし)',
     tabInventory: '在庫管理', tabPlayers: '選手管理', tabPlan: '特別強化プラン',
     searchPlaceholder: 'スキル名で検索(例: ラボーナ)',
     addEntryBtn: '＋ 育成選手を追加',
@@ -774,8 +774,8 @@ const STR = {
     tgtSkillsTitle: '目標スキル(理想・優先順、候補は最大{max}。追加できるのは枠5つまで、6個目以降は控え候補) — クリックした順が優先度になる',
     tgtSkillsEmpty: 'まだ目標スキルが未設定。下のスキル一覧から選んで。',
     alertNoName: '選手名を入力して。',
-    gpSectionTitle: '■ 想定GP消費(応用方式・まとめ技)',
-    gpNote: '同名の育成選手(ロンバルジ/ヴェルレーヌ)同士でスキルを1体にまとめてから(129,000GP/回)、まとめ終えた個体を対象選手へ特別強化する方式(仕上げ費用は保有スキル数で変動)での合計GP目安。まとめ技は対象選手1人ぶんずつしか使えないので、選手ごとに集計してから合算してる。',
+    gpSectionTitle: '■ 想定GP消費',
+    gpNote: '同名の育成選手(ロンバルジ/ヴェルレーヌ)同士でスキルを1体にまとめてから(129,000GP/回)、対象選手へ特別強化する場合の合計GP目安(仕上げ費用は保有スキル数で変動)。対象選手ごとに集計してから合算してる。',
     multiCandTitle: '■ 候補が複数いるスキル(誰に付けるか選ぶ)',
     multiCandNote: 'チェックした選手が優先して在庫を取る。チェックなしの選手は選手管理タブの並び順。在庫数を超えてチェックすると、最初にチェックした選手が外れる。緑=今のプランで割当予定',
     multiCandTh: ['スキル名', '在庫', '候補の選手'],
@@ -803,8 +803,8 @@ const STR = {
   en: {
     pageTitle: 'Squad Enhancement Manager (Players × Lombardi)',
     headerTitle: 'Squad Enhancement Manager',
-    headerSubtitle: "Rank each player's target skills, and it figures out who gets what from your Lombardi/Verlaine stock — with a direct-vs-fusion GP cost comparison. No external database, no ads.",
-    tabInventory: 'Inventory', tabPlayers: 'Players', tabPlan: 'Enhancement Plan',
+    headerSubtitle: "Rank each player's target skills, and it figures out who gets what from your Lombardi/Verlaine stock — plus calculates the GP cost to fuse it all. No external database, no ads.",
+    tabInventory: 'Inventory', tabPlayers: 'Players', tabPlan: 'Fusion Plan',
     searchPlaceholder: 'Search by skill name (e.g. Rabona)',
     addEntryBtn: '＋ Add training player',
     bulkTitle: 'Pick skills to register several units at once',
@@ -816,7 +816,7 @@ const STR = {
     playerNamePlaceholder: 'Player name (e.g. Lionel Messi)',
     starterLabel: 'Starting XI',
     addPlayerBtn: '＋ Add player',
-    recalcBtn: 'Calculate enhancement plan',
+    recalcBtn: 'Calculate fusion plan',
     lombardi: 'Lombardi', verlaine: 'Verlaine',
     saveFailGeneric: 'Save failed. Check your browser settings (e.g. private browsing mode).',
     emptyNoEntries1: 'No training players registered yet.',
@@ -830,7 +830,7 @@ const STR = {
     priority: 'Priority {n}',
     raisePriorityTitle: 'Raise priority',
     lowerPriorityTitle: 'Lower priority',
-    starterWord: 'Starting', benchWord: 'Bench',
+    starterWord: 'Starter', benchWord: 'Bench',
     starterToggleTitle: '{state} (click to toggle)',
     curTgtCount: 'Current {n} · Target {m}',
     targetCheckboxLabel: 'Target',
@@ -843,18 +843,18 @@ const STR = {
     tgtSkillsTitle: 'Target skills (ideal priority order, up to {max} candidates. Only 5 slots can actually be equipped — the 6th onward are backup candidates) — the order you click them in sets the priority',
     tgtSkillsEmpty: 'No target skills set yet. Pick some from the skill list below.',
     alertNoName: 'Please enter a player name.',
-    gpSectionTitle: '■ Estimated GP cost (combo method)',
-    gpNote: "Estimated total GP for combining skills onto one training unit of the same type (Lombardi/Verlaine) first (129,000 GP per combine), then using that unit to enhance the target player (the finishing cost varies with the number of skills held). The combo move can only be used for one player at a time, so this is totalled per player first.",
+    gpSectionTitle: '■ Estimated GP Cost',
+    gpNote: "Estimated total GP to fuse matching skills onto one Lombardi/Verlaine first — 129,000 GP each time — then fuse that card into the target player (the final cost depends on how many skills it holds). Counted per target player, since a fused card can only go to one player.",
     multiCandTitle: '■ Skills with multiple candidates (choose who gets it)',
     multiCandNote: "A checked player takes priority on stock. An unchecked player follows the Players tab order. Checking more than the stock available drops the first player you checked. Green = assigned in the current plan",
     multiCandTh: ['Skill', 'Stock', 'Candidate players'],
     multiCandEmpty: 'No skill currently has stock with multiple candidates',
     summaryTitle: '■ Per-player summary (allocated by Players tab order = priority)',
     summaryNote: 'Supply = {r} Lombardi in stock (field) + {v} Verlaine in stock (GK) / Demand = each player\'s unequipped "target skills" (excludes players marked inactive)',
-    summaryTh: ['Player', 'Position', 'Role', 'Current skills', 'Match', 'Target skills (priority order)', 'Skills ready to add now'],
+    summaryTh: ['Player', 'Position', 'Role', 'Current skills', 'Match', 'Target skills (priority order)', 'Skills ready to fuse now'],
     none: '(None)', notSet: '(Not set)',
     dropNoteTitle: "Slots are full, so these get dropped first. They're outside the target list, so no GP is needed. Only the checked amount gets dropped, from the front",
-    summaryEmpty: "No player currently has a skill ready to add (either stock is short, or everyone's targets are already met)",
+    summaryEmpty: "No player currently has a skill ready to fuse (either stock is short, or everyone's targets are already met)",
     applyPlanBtn: 'Apply selected',
     planStatusCalculated: 'Reflects the inventory/player data as of the last calculation',
     ledgerTitle: '■ {title} (skills changed this time only)',
@@ -866,7 +866,7 @@ const STR = {
     alertNoneSelected: 'No skills selected to apply.',
     planStatusApplied: 'Applied {n} skill(s) (inventory/player data updated)',
     emptyNoPlayersForPlan: 'No players registered yet. First register players and target skills in the "Players" tab.',
-    dLabelCur: 'Current', dLabelMatch: 'Match', dLabelTgt: 'Target', dLabelAdd: 'Add now',
+    dLabelCur: 'Current', dLabelMatch: 'Match', dLabelTgt: 'Target', dLabelAdd: 'Fuse now',
     langToggle: '日本語',
   },
 };
