@@ -10,7 +10,12 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
-<title>特別強化管理(選手×ロンバルジ)</title>
+<title>eFootball Skill Planner — Lombardi/Verlaine Squad Enhancement Manager</title>
+<meta name="description" content="Set each player's target skills and this figures out who gets what from your Lombardi/Verlaine stock, plus a GP cost comparison for skill fusion. Free, no login, no ads — everything stays on your device.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://oo8810.github.io/ronbaruji-manager/">
+<meta property="og:title" content="eFootball Skill Planner — Lombardi/Verlaine Squad Enhancement Manager">
+<meta property="og:description" content="Set each player's target skills and this figures out who gets what from your Lombardi/Verlaine stock, plus a GP cost comparison for skill fusion. Free, no login, no ads — everything stays on your device.">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%20100%20100%27%3E%3Crect%20width=%27100%27%20height=%27100%27%20rx=%2722%27%20fill=%27%233CB554%27/%3E%3Cg%20transform=%27translate%283.75%2016.5%29%20scale%280.75%29%27%20fill=%27%23FFFFFF%27%3E%3Cpath%20d=%27M24%2064L24%2044Q24%2040%2028%2040L40%2040Q44%2040%2046%2044L50%2050Q54%2055%2060%2056L72%2059Q78%2061%2078%2065L78%2066L24%2066Z%27/%3E%3Crect%20x=%2728%27%20y=%2770%27%20width=%277%27%20height=%277%27%20rx=%271.5%27/%3E%3Crect%20x=%2746%27%20y=%2770%27%20width=%277%27%20height=%277%27%20rx=%271.5%27/%3E%3Crect%20x=%2765%27%20y=%2770%27%20width=%277%27%20height=%277%27%20rx=%271.5%27/%3E%3C/g%3E%3Ccircle%20cx=%2768%27%20cy=%2733%27%20r=%2722%27%20fill=%27%2316200F%27%20stroke=%27%233CB554%27%20stroke-width=%273%27/%3E%3Cpath%20d=%27M57%2033L65.3%2041.3L80.4%2023.4%27%20fill=%27none%27%20stroke=%27%23FFFFFF%27%20stroke-width=%277%27%20stroke-linecap=%27round%27%20stroke-linejoin=%27round%27/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -729,7 +734,7 @@ const STR = {
   ja: {
     pageTitle: '特別強化管理(選手×ロンバルジ)',
     headerTitle: '特別強化管理',
-    headerSubtitle: 'ロンバルジ在庫・選手の目標スキル・特別強化プランを1つのアプリで管理する(外部データDBなし・自分で目標を決める版)',
+    headerSubtitle: '選手ごとに目標スキルを優先順位つきで決めるだけで、手持ちのロンバルジ/ヴェルレーヌから誰に何を付けるか自動で割り振る(直接 vs まとめ技のGP比較つき・外部DBなし)',
     tabInventory: '在庫管理', tabPlayers: '選手管理', tabPlan: '特別強化プラン',
     searchPlaceholder: 'スキル名で検索(例: ラボーナ)',
     addEntryBtn: '＋ 育成選手を追加',
@@ -798,7 +803,7 @@ const STR = {
   en: {
     pageTitle: 'Squad Enhancement Manager (Players × Lombardi)',
     headerTitle: 'Squad Enhancement Manager',
-    headerSubtitle: "Manage your Lombardi stock, players' target skills, and the enhancement plan all in one app (no external database — you set your own goals)",
+    headerSubtitle: "Rank each player's target skills, and it figures out who gets what from your Lombardi/Verlaine stock — with a direct-vs-fusion GP cost comparison. No external database, no ads.",
     tabInventory: 'Inventory', tabPlayers: 'Players', tabPlan: 'Enhancement Plan',
     searchPlaceholder: 'Search by skill name (e.g. Rabona)',
     addEntryBtn: '＋ Add training player',
