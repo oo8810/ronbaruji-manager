@@ -61,7 +61,7 @@
     letter-spacing:0.02em;
     margin:0;
   }
-  h1 span{color:var(--muted); font-weight:400; font-size:14px; display:block; margin-top:4px; font-family:'Inter',sans-serif;}
+  h1 .h1-subtitle{color:var(--muted); font-weight:400; font-size:14px; display:block; margin-top:4px; font-family:'Inter',sans-serif;}
 
   /* ---- tabs ---- */
   .tabs{
@@ -559,7 +559,7 @@
     .entry-body{padding-left:16px;}
     table.plan-table{display:block; overflow-x:auto; -webkit-overflow-scrolling:touch;}
     /* スマホ: 見出しの行を折り返し可能にして、タグが1文字ずつ縦に潰れないようにする */
-    header h1 span{display:none;}
+    header h1 .h1-subtitle{display:none;}
     .entry-head{flex-wrap:wrap; gap:8px 10px; padding:12px;}
     .entry-num{width:auto; min-width:44px;}
     .entry-skills{max-width:100%; flex-shrink:1;}
@@ -617,13 +617,14 @@
 <div class="wrap">
 
   <header>
-    <h1>特別強化管理<span>ロンバルジ在庫・選手の目標スキル・特別強化プランを1つのアプリで管理する(外部データDBなし・自分で目標を決める版)</span></h1>
+    <button id="langToggleBtn" class="ghost-btn" style="float:right; margin-top:4px;">English</button>
+    <h1><span data-i18n="headerTitle">特別強化管理</span><span class="h1-subtitle" data-i18n="headerSubtitle">ロンバルジ在庫・選手の目標スキル・特別強化プランを1つのアプリで管理する(外部データDBなし・自分で目標を決める版)</span></h1>
   </header>
 
   <div class="tabs">
-    <button class="tab-btn active" data-tab="inventory">在庫管理</button>
-    <button class="tab-btn" data-tab="players">選手管理</button>
-    <button class="tab-btn" data-tab="plan">特別強化プラン</button>
+    <button class="tab-btn active" data-tab="inventory" data-i18n="tabInventory">在庫管理</button>
+    <button class="tab-btn" data-tab="players" data-i18n="tabPlayers">選手管理</button>
+    <button class="tab-btn" data-tab="plan" data-i18n="tabPlan">特別強化プラン</button>
   </div>
 
   <!-- ============ TAB: 在庫 ============ -->
@@ -632,24 +633,24 @@
     <div class="status-line" id="totalCountLine" style="margin-top:0;"></div>
 
     <div class="toolbar">
-      <input type="text" id="searchInput" placeholder="スキル名で検索(例: ラボーナ)">
-      <button class="add-btn" id="addBtn">＋ 育成選手を追加</button>
+      <input type="text" id="searchInput" placeholder="スキル名で検索(例: ラボーナ)" data-i18n-placeholder="searchPlaceholder">
+      <button class="add-btn" id="addBtn" data-i18n="addEntryBtn">＋ 育成選手を追加</button>
     </div>
 
     <div class="bulk-panel" id="bulkPanel" style="display:none;">
       <div class="bulk-header">
-        <div class="bulk-title">スキルを選んで人数分まとめて登録</div>
+        <div class="bulk-title" data-i18n="bulkTitle">スキルを選んで人数分まとめて登録</div>
         <button class="panel-close" id="bulkClose">×</button>
       </div>
       <label style="display:flex; align-items:center; gap:6px; font-size:12.5px; color:var(--muted); padding:0 18px 12px;">
-        <input type="checkbox" id="bulkIsGK"> 全部ヴェルレーヌ(GK用)として登録する(OFFならGK系スキルだけ自動でヴェルレーヌになる)
+        <input type="checkbox" id="bulkIsGK"> <span data-i18n="bulkIsGKLabel">全部ヴェルレーヌ(GK用)として登録する(OFFならGK系スキルだけ自動でヴェルレーヌになる)</span>
       </label>
       <div id="bulkCats"></div>
       <div class="bulk-footer">
-        <button class="ghost-btn" id="bulkBlankAdd">スキル未定のまま1人だけ追加</button>
+        <button class="ghost-btn" id="bulkBlankAdd" data-i18n="bulkBlankAddBtn">スキル未定のまま1人だけ追加</button>
         <div class="bulk-footer-right">
           <span id="bulkSummary">0人ぶん選択中</span>
-          <button class="add-btn" id="bulkSubmit">登録する</button>
+          <button class="add-btn" id="bulkSubmit" data-i18n="bulkSubmitBtn">登録する</button>
         </div>
       </div>
     </div>
@@ -661,11 +662,11 @@
   <!-- ============ TAB: 選手 ============ -->
   <div class="tab-panel" id="tab-players">
     <div class="toolbar">
-      <input type="text" id="playerNameInput" placeholder="選手名(例: リオネル メッシ)">
+      <input type="text" id="playerNameInput" placeholder="選手名(例: リオネル メッシ)" data-i18n-placeholder="playerNamePlaceholder">
       <label style="display:flex; align-items:center; gap:6px; font-size:13px; color:var(--muted);">
-        <input type="checkbox" id="playerStarterInput"> スタメン
+        <input type="checkbox" id="playerStarterInput"> <span data-i18n="starterLabel">スタメン</span>
       </label>
-      <button class="add-btn" id="addPlayerBtn">＋ 選手を追加</button>
+      <button class="add-btn" id="addPlayerBtn" data-i18n="addPlayerBtn">＋ 選手を追加</button>
     </div>
     <div class="status-line" id="playerStatusLine" style="margin-top:0; margin-bottom:16px;"></div>
 
@@ -675,7 +676,7 @@
   <!-- ============ TAB: プラン ============ -->
   <div class="tab-panel" id="tab-plan">
     <div class="toolbar">
-      <button class="add-btn" id="recalcBtn">特別強化プランを計算</button>
+      <button class="add-btn" id="recalcBtn" data-i18n="recalcBtn">特別強化プランを計算</button>
       <span class="status-line" id="planStatusLine" style="margin:0;"></span>
     </div>
     <div id="planOutput"></div>
@@ -701,6 +702,183 @@ const CATEGORIES = [
 const SKILL_TO_CAT = {};
 CATEGORIES.forEach(c => c.skills.forEach(s => SKILL_TO_CAT[s] = c.key));
 
+/* ==================================================================
+   i18n — 表示だけを切り替える(保存データ・内部キーは常に日本語のまま)
+   ================================================================== */
+let LANG = (localStorage.getItem('appLang') === 'en') ? 'en' : 'ja';
+const CAT_EN = { shoot: 'Shooting', pass: 'Passing', dribble: 'Dribbling', defense: 'Defending', other: 'Other', gk: 'Goalkeeping' };
+const SKILL_EN = {
+  'コントロールカーブ': 'Long-range Curler', 'コントロールループ': 'Chip Shot Control', '無回転シュート': 'Knuckle Shot',
+  'ドロップシュート': 'Dipping Shot', 'ライジングシュート': 'Rising Shot', 'ミドルシュート': 'Long-range Shooting',
+  'アクロバティックシュート': 'Acrobatic Finishing', 'ワンタッチシュート': 'First-time Shot', 'PKキッカー': 'Penalty Specialist',
+  'ヒールトリック': 'Heel Trick', 'ワンタッチパス': 'One-touch Pass', 'スルーパス': 'Through Passing',
+  'バックスピンロブ': 'Weighted Pass', 'ピンポイントクロス': 'Pinpoint Crossing', 'アウトスピンキック': 'Outside Curler',
+  'ラボーナ': 'Rabona', 'ノールックパス': 'No Look Pass', '低弾道ロブ': 'Low Lofted Pass',
+  'シザーズ': 'Scissors Feint', 'ダブルタッチ': 'Double Touch', 'エラシコ': 'Flip Flap', 'ルーレット': 'Marseille Turn',
+  'シャペウ': 'Sombrero', 'エッジターン': 'Chop Turn', '軸裏ターン': 'Scotch Move', '軸足当て': 'Cut Behind & Turn',
+  '足裏コントロール': 'Sole Control',
+  'マンマーク': 'Man Marking', 'チェイシング': 'Track Back', 'インターセプト': 'Interception', 'ブロッカー': 'Blocker',
+  'スライディングタックル': 'Sliding Tackle', 'アクロバティッククリア': 'Acrobatic Clearance',
+  'ヘッダー': 'Heading', 'ロングスロー': 'Long Throw', 'マリーシア': 'Gamesmanship', 'エアバトル': 'Aerial Superiority',
+  'キャプテンシー': 'Captaincy', 'スーパーサブ': 'Super-sub', '闘争心': 'Fighting Spirit',
+  '低弾道パントキック': 'GK Low Punt', '高弾道パントキック': 'GK High Punt', 'GKロングスロー': 'GK Long Throw', 'PKストッパー': 'GK Penalty Saver',
+};
+function skillLabel(ja){ return LANG === 'en' ? (SKILL_EN[ja] || ja) : ja; }
+function catLabel(key){ return LANG === 'en' ? (CAT_EN[key] || key) : (CATEGORIES.find(c => c.key === key) || {}).label; }
+const STR = {
+  ja: {
+    pageTitle: '特別強化管理(選手×ロンバルジ)',
+    headerTitle: '特別強化管理',
+    headerSubtitle: 'ロンバルジ在庫・選手の目標スキル・特別強化プランを1つのアプリで管理する(外部データDBなし・自分で目標を決める版)',
+    tabInventory: '在庫管理', tabPlayers: '選手管理', tabPlan: '特別強化プラン',
+    searchPlaceholder: 'スキル名で検索(例: ラボーナ)',
+    addEntryBtn: '＋ 育成選手を追加',
+    bulkTitle: 'スキルを選んで人数分まとめて登録',
+    bulkIsGKLabel: '全部ヴェルレーヌ(GK用)として登録する(OFFならGK系スキルだけ自動でヴェルレーヌになる)',
+    bulkBlankAddBtn: 'スキル未定のまま1人だけ追加',
+    bulkSubmitBtn: '登録する',
+    bulkSummary: '{n}人ぶん選択中',
+    bulkConfirmBlank: 'スキル未設定のまま登録する。個体は基本スキル付きで獲得するはずなので、誤クリックでないか確認して。よければOKを押して。',
+    playerNamePlaceholder: '選手名(例: リオネル メッシ)',
+    starterLabel: 'スタメン',
+    addPlayerBtn: '＋ 選手を追加',
+    recalcBtn: '特別強化プランを計算',
+    lombardi: 'ロンバルジ', verlaine: 'ヴェルレーヌ',
+    saveFailGeneric: '保存に失敗した。ブラウザの設定(プライベートモードなど)を確認して。',
+    emptyNoEntries1: 'まだ育成選手が登録されてない。',
+    emptyNoEntries2: '「＋ 育成選手を追加」から最初の1人を登録して。',
+    emptyNoFilterMatch: '条件に一致する育成選手がいない。',
+    skillUnset: '未設定',
+    entrySkillCount: '{n}スキル',
+    deleteTitle: '削除',
+    totalCount: '合計保有数: ロンバルジ {r}体 / ヴェルレーヌ {v}体',
+    dragHandleTitle: 'ドラッグで並べ替え',
+    priority: '優先{n}',
+    raisePriorityTitle: '優先度を上げる',
+    lowerPriorityTitle: '優先度を下げる',
+    starterWord: 'スタメン', benchWord: '控え',
+    starterToggleTitle: '{state}(クリックで切替)',
+    curTgtCount: '現在{n}・目標{m}',
+    targetCheckboxLabel: '対象',
+    inactiveDivider: '対象外',
+    emptyNoPlayers1: 'まだ選手が登録されてない。',
+    emptyNoPlayers2: '上のフォームから選手を追加して。',
+    posTitle: 'ポジション',
+    gkCheckboxLabel: 'GK選手(ヴェルレーヌ対象)',
+    curSkillsTitle: '現在の追加スキル(最大5)',
+    tgtSkillsTitle: '目標スキル(理想・優先順、候補は最大{max}。追加できるのは枠5つまで、6個目以降は控え候補) — クリックした順が優先度になる',
+    tgtSkillsEmpty: 'まだ目標スキルが未設定。下のスキル一覧から選んで。',
+    alertNoName: '選手名を入力して。',
+    gpSectionTitle: '■ 想定GP消費(応用方式・まとめ技)',
+    gpNote: '同名の育成選手(ロンバルジ/ヴェルレーヌ)同士でスキルを1体にまとめてから(129,000GP/回)、まとめ終えた個体を対象選手へ特別強化する方式(仕上げ費用は保有スキル数で変動)での合計GP目安。まとめ技は対象選手1人ぶんずつしか使えないので、選手ごとに集計してから合算してる。',
+    multiCandTitle: '■ 候補が複数いるスキル(誰に付けるか選ぶ)',
+    multiCandNote: 'チェックした選手が優先して在庫を取る。チェックなしの選手は選手管理タブの並び順。在庫数を超えてチェックすると、最初にチェックした選手が外れる。緑=今のプランで割当予定',
+    multiCandTh: ['スキル名', '在庫', '候補の選手'],
+    multiCandEmpty: '在庫があって候補が複数いるスキルはない',
+    summaryTitle: '■ 選手別サマリー(選手管理タブの並び順=優先度で配分)',
+    summaryNote: '供給=ロンバルジ在庫{r}体(フィールド用)+ヴェルレーヌ在庫{v}体(GK用) / 需要=各選手の「目標スキル」のうち未装備の分(対象外にした選手は含まない)',
+    summaryTh: ['選手名', 'ポジション', '起用', '現在の追加スキル', '一致数', '目標スキル(優先順)', '今すぐ追加で特別強化できるスキル'],
+    none: '(なし)', notSet: '(未設定)',
+    dropNoteTitle: '枠が埋まってるから先に外す。目標外のスキルで、GPは不要。チェックした分だけ先頭から外す',
+    summaryEmpty: '今すぐ特別強化できるスキルがある選手はいない(在庫が足りないか、全員目標スキルを満たしてる)',
+    applyPlanBtn: '選択した分を反映する',
+    planStatusCalculated: '計算した時点の在庫・選手データを反映してる',
+    ledgerTitle: '■ {title}(今回変化があったスキルのみ)',
+    lombardiLedger: 'ロンバルジ在庫台帳', verlaineLedger: 'ヴェルレーヌ在庫台帳',
+    ledgerTh: ['スキル名', '保有数', '今回割当数', '残数', '状態'],
+    ledgerUsedUp: '使い切り', ledgerPartial: '一部使用',
+    ledgerEmpty: '今回割り当てが発生したスキルはない',
+    confirmApply: '{n}件のスキルを反映する。対応する在庫からも減るし、枠が埋まってる選手は目標外のスキルを外して差し替えるけどよい?',
+    alertNoneSelected: '反映するスキルが選択されてない。',
+    planStatusApplied: '{n}件を反映した(在庫・選手データ更新済み)',
+    emptyNoPlayersForPlan: 'まだ選手が登録されてない。先に「選手管理」タブで選手と目標スキルを登録して。',
+    dLabelCur: '現在', dLabelMatch: '一致', dLabelTgt: '目標', dLabelAdd: '今すぐ強化',
+    langToggle: 'English',
+  },
+  en: {
+    pageTitle: 'Squad Enhancement Manager (Players × Lombardi)',
+    headerTitle: 'Squad Enhancement Manager',
+    headerSubtitle: "Manage your Lombardi stock, players' target skills, and the enhancement plan all in one app (no external database — you set your own goals)",
+    tabInventory: 'Inventory', tabPlayers: 'Players', tabPlan: 'Enhancement Plan',
+    searchPlaceholder: 'Search by skill name (e.g. Rabona)',
+    addEntryBtn: '＋ Add training player',
+    bulkTitle: 'Pick skills to register several units at once',
+    bulkIsGKLabel: 'Register all as Verlaine (for GK) (if off, only GK skills auto-register as Verlaine)',
+    bulkBlankAddBtn: 'Add one unit without setting a skill',
+    bulkSubmitBtn: 'Register',
+    bulkSummary: '{n} selected',
+    bulkConfirmBlank: "Register without setting a skill. Units normally come with a base skill already, so make sure this isn't a misclick. Press OK to continue.",
+    playerNamePlaceholder: 'Player name (e.g. Lionel Messi)',
+    starterLabel: 'Starting XI',
+    addPlayerBtn: '＋ Add player',
+    recalcBtn: 'Calculate enhancement plan',
+    lombardi: 'Lombardi', verlaine: 'Verlaine',
+    saveFailGeneric: 'Save failed. Check your browser settings (e.g. private browsing mode).',
+    emptyNoEntries1: 'No training players registered yet.',
+    emptyNoEntries2: 'Register your first one with "＋ Add training player".',
+    emptyNoFilterMatch: 'No training players match the filter.',
+    skillUnset: 'Not set',
+    entrySkillCount: '{n} skills',
+    deleteTitle: 'Delete',
+    totalCount: 'Total stock: Lombardi {r} / Verlaine {v}',
+    dragHandleTitle: 'Drag to reorder',
+    priority: 'Priority {n}',
+    raisePriorityTitle: 'Raise priority',
+    lowerPriorityTitle: 'Lower priority',
+    starterWord: 'Starting', benchWord: 'Bench',
+    starterToggleTitle: '{state} (click to toggle)',
+    curTgtCount: 'Current {n} · Target {m}',
+    targetCheckboxLabel: 'Target',
+    inactiveDivider: 'Excluded',
+    emptyNoPlayers1: 'No players registered yet.',
+    emptyNoPlayers2: 'Add a player using the form above.',
+    posTitle: 'Position',
+    gkCheckboxLabel: 'GK player (Verlaine target)',
+    curSkillsTitle: 'Current equipped skills (max 5)',
+    tgtSkillsTitle: 'Target skills (ideal priority order, up to {max} candidates. Only 5 slots can actually be equipped — the 6th onward are backup candidates) — the order you click them in sets the priority',
+    tgtSkillsEmpty: 'No target skills set yet. Pick some from the skill list below.',
+    alertNoName: 'Please enter a player name.',
+    gpSectionTitle: '■ Estimated GP cost (combo method)',
+    gpNote: "Estimated total GP for combining skills onto one training unit of the same type (Lombardi/Verlaine) first (129,000 GP per combine), then using that unit to enhance the target player (the finishing cost varies with the number of skills held). The combo move can only be used for one player at a time, so this is totalled per player first.",
+    multiCandTitle: '■ Skills with multiple candidates (choose who gets it)',
+    multiCandNote: "A checked player takes priority on stock. An unchecked player follows the Players tab order. Checking more than the stock available drops the first player you checked. Green = assigned in the current plan",
+    multiCandTh: ['Skill', 'Stock', 'Candidate players'],
+    multiCandEmpty: 'No skill currently has stock with multiple candidates',
+    summaryTitle: '■ Per-player summary (allocated by Players tab order = priority)',
+    summaryNote: 'Supply = {r} Lombardi in stock (field) + {v} Verlaine in stock (GK) / Demand = each player\'s unequipped "target skills" (excludes players marked inactive)',
+    summaryTh: ['Player', 'Position', 'Role', 'Current skills', 'Match', 'Target skills (priority order)', 'Skills ready to add now'],
+    none: '(None)', notSet: '(Not set)',
+    dropNoteTitle: "Slots are full, so these get dropped first. They're outside the target list, so no GP is needed. Only the checked amount gets dropped, from the front",
+    summaryEmpty: "No player currently has a skill ready to add (either stock is short, or everyone's targets are already met)",
+    applyPlanBtn: 'Apply selected',
+    planStatusCalculated: 'Reflects the inventory/player data as of the last calculation',
+    ledgerTitle: '■ {title} (skills changed this time only)',
+    lombardiLedger: 'Lombardi Stock Ledger', verlaineLedger: 'Verlaine Stock Ledger',
+    ledgerTh: ['Skill', 'In stock', 'Assigned now', 'Remaining', 'Status'],
+    ledgerUsedUp: 'Depleted', ledgerPartial: 'Partially used',
+    ledgerEmpty: 'No skill was assigned this time',
+    confirmApply: "Apply {n} skill(s). This will also reduce the matching stock, and for players with full slots, non-target skills will be dropped and replaced. OK?",
+    alertNoneSelected: 'No skills selected to apply.',
+    planStatusApplied: 'Applied {n} skill(s) (inventory/player data updated)',
+    emptyNoPlayersForPlan: 'No players registered yet. First register players and target skills in the "Players" tab.',
+    dLabelCur: 'Current', dLabelMatch: 'Match', dLabelTgt: 'Target', dLabelAdd: 'Add now',
+    langToggle: '日本語',
+  },
+};
+function S(key, vars){
+  let s = (STR[LANG] && STR[LANG][key] !== undefined) ? STR[LANG][key] : STR.ja[key];
+  if(Array.isArray(s)) return s;
+  if(vars) Object.keys(vars).forEach(k => { s = s.split('{'+k+'}').join(vars[k]); });
+  return s;
+}
+function applyStaticI18n(){
+  document.documentElement.lang = LANG;
+  document.title = S('pageTitle');
+  document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = S(el.dataset.i18n); });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => { el.placeholder = S(el.dataset.i18nPlaceholder); });
+  const toggleBtn = document.getElementById('langToggleBtn');
+  if(toggleBtn) toggleBtn.textContent = S('langToggle');
+}
 function escapeHtml(str){
   const d = document.createElement('div');
   d.textContent = str;
@@ -758,7 +936,7 @@ function nextEntryNum(){
 function newEntry(num, isGK){
   return {
     id: 'e' + Date.now() + Math.random().toString(36).slice(2,7),
-    label: (isGK ? 'ヴェルレーヌ' : 'ロンバルジ') + ' ' + String(num).padStart(3,'0'),
+    label: S(isGK ? 'verlaine' : 'lombardi') + ' ' + String(num).padStart(3,'0'),
     isGK: !!isGK,
     skills: []
   };
@@ -791,7 +969,7 @@ function saveEntries(){
     localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
     statusLine.textContent = '';
   }catch(e){
-    statusLine.textContent = '保存に失敗した。ブラウザの設定(プライベートモードなど)を確認して。';
+    statusLine.textContent = S('saveFailGeneric');
   }
 }
 function buildDash(){
@@ -802,7 +980,7 @@ function buildDash(){
     const cell = document.createElement('div');
     cell.className = 'dash-cell ' + cat.key + (activeCategoryFilter === cat.key ? ' active' : '');
     cell.style.setProperty('--cell-accent', `var(--${cat.key})`);
-    cell.innerHTML = `<div class="num">${count}</div><div class="lbl">${cat.label}</div>`;
+    cell.innerHTML = `<div class="num">${count}</div><div class="lbl">${catLabel(cat.key)}</div>`;
     cell.addEventListener('click', () => {
       activeCategoryFilter = (activeCategoryFilter === cat.key) ? '' : cat.key;
       render();
@@ -825,7 +1003,7 @@ function getFiltered(){
   const q = document.getElementById('searchInput').value.trim();
   let list = entries.map((en, idx) => ({ en, idx }));
   if(q){
-    list = list.filter(({en}) => en.skills.some(s => s.includes(q)) || en.label.includes(q));
+    list = list.filter(({en}) => en.skills.some(s => s.includes(q) || skillLabel(s).includes(q)) || en.label.includes(q));
   }
   if(activeCategoryFilter){
     list = list.filter(({en}) => en.skills.some(s => SKILL_TO_CAT[s] === activeCategoryFilter));
@@ -838,19 +1016,18 @@ function render(){
 
   const ronbarujiCount = entries.filter(en => !en.isGK).length;
   const verlaineCount = entries.filter(en => en.isGK).length;
-  document.getElementById('totalCountLine').textContent =
-    `合計保有数: ロンバルジ ${ronbarujiCount}体 / ヴェルレーヌ ${verlaineCount}体`;
+  document.getElementById('totalCountLine').textContent = S('totalCount', { r: ronbarujiCount, v: verlaineCount });
 
   const squad = document.getElementById('squad');
   squad.innerHTML = '';
   const filtered = getFiltered();
 
   if(entries.length === 0){
-    squad.innerHTML = `<div class="empty-state"><p>まだ育成選手が登録されてない。</p><p>「＋ 育成選手を追加」から最初の1人を登録して。</p></div>`;
+    squad.innerHTML = `<div class="empty-state"><p>${S('emptyNoEntries1')}</p><p>${S('emptyNoEntries2')}</p></div>`;
     return;
   }
   if(filtered.length === 0){
-    squad.innerHTML = `<div class="empty-state"><p>条件に一致する育成選手がいない。</p></div>`;
+    squad.innerHTML = `<div class="empty-state"><p>${S('emptyNoFilterMatch')}</p></div>`;
     return;
   }
 
@@ -862,16 +1039,16 @@ function render(){
     const head = document.createElement('div');
     head.className = 'entry-head';
     const skillsHtml = en.skills.length
-      ? en.skills.map(s => `<span class="skill-name" style="color:var(--${SKILL_TO_CAT[s]})">${escapeHtml(s)}</span>`).join('')
-      : `<span class="skill-name unset">未設定</span>`;
+      ? en.skills.map(s => `<span class="skill-name" style="color:var(--${SKILL_TO_CAT[s]})">${escapeHtml(skillLabel(s))}</span>`).join('')
+      : `<span class="skill-name unset">${S('skillUnset')}</span>`;
     head.innerHTML = `
       <span class="chevron">▶</span>
       <span class="entry-num">${String(idx+1).padStart(3,'0')}</span>
       ${en.isGK ? '<span class="starter-badge gk-badge">GK</span>' : ''}
       <span class="entry-skills">${skillsHtml}</span>
       <input class="entry-label" value="${escapeHtml(en.label)}" data-id="${en.id}">
-      <span class="entry-skillcount">${en.skills.length}スキル</span>
-      <button class="delete-btn" data-id="${en.id}" title="削除">×</button>
+      <span class="entry-skillcount">${S('entrySkillCount', { n: en.skills.length })}</span>
+      <button class="delete-btn" data-id="${en.id}" title="${S('deleteTitle')}">×</button>
     `;
     head.addEventListener('click', (e) => {
       if(e.target.classList.contains('entry-label') || e.target.classList.contains('delete-btn')) return;
@@ -900,9 +1077,9 @@ function render(){
     body.className = 'entry-body';
     body.innerHTML = CATEGORIES.map(cat => `
       <div class="cat-block">
-        <div class="cat-title ${cat.key}">${cat.label}</div>
+        <div class="cat-title ${cat.key}">${catLabel(cat.key)}</div>
         <div class="skill-grid">
-          ${cat.skills.map(s => `<span class="skill-chip ${cat.key} ${en.skills.includes(s) ? 'on' : ''}" data-skill="${escapeHtml(s)}">${s}</span>`).join('')}
+          ${cat.skills.map(s => `<span class="skill-chip ${cat.key} ${en.skills.includes(s) ? 'on' : ''}" data-skill="${escapeHtml(s)}">${escapeHtml(skillLabel(s))}</span>`).join('')}
         </div>
       </div>
     `).join('');
@@ -926,12 +1103,12 @@ function renderBulkPanel(){
   const container = document.getElementById('bulkCats');
   container.innerHTML = CATEGORIES.map(cat => `
     <div class="cat-block">
-      <div class="cat-title ${cat.key}">${cat.label}</div>
+      <div class="cat-title ${cat.key}">${catLabel(cat.key)}</div>
       <div class="skill-grid">
         ${cat.skills.map(s => {
           const qty = bulkQty[s] || 0;
           return `<span class="skill-chip bulk-chip ${cat.key} ${qty>0 ? 'on' : ''}" data-skill="${escapeHtml(s)}">
-            <span class="chip-name">${s}</span>
+            <span class="chip-name">${escapeHtml(skillLabel(s))}</span>
             ${qty>0 ? `<span class="chip-qty"><button class="qty-btn minus" data-skill="${escapeHtml(s)}">−</button><span class="qty-num">${qty}</span></span>` : ''}
           </span>`;
         }).join('')}
@@ -956,7 +1133,7 @@ function renderBulkPanel(){
     });
   });
   const total = Object.values(bulkQty).reduce((a,b) => a+b, 0);
-  document.getElementById('bulkSummary').textContent = total + '人ぶん選択中';
+  document.getElementById('bulkSummary').textContent = S('bulkSummary', { n: total });
 }
 document.getElementById('addBtn').addEventListener('click', () => {
   bulkQty = {};
@@ -968,7 +1145,7 @@ document.getElementById('bulkClose').addEventListener('click', () => {
   document.getElementById('bulkPanel').style.display = 'none';
 });
 document.getElementById('bulkBlankAdd').addEventListener('click', () => {
-  if(!confirm('スキル未設定のまま登録する。個体は基本スキル付きで獲得するはずなので、誤クリックでないか確認して。よければOKを押して。')) return;
+  if(!confirm(S('bulkConfirmBlank'))) return;
   const isGK = document.getElementById('bulkIsGK').checked;
   const en = newEntry(nextEntryNum(), isGK);
   entries.push(en);
@@ -1037,14 +1214,14 @@ function savePlayers(){
     localStorage.setItem(STORAGE_KEY_PLAYERS, JSON.stringify(players));
     statusLine.textContent = '';
   }catch(e){
-    statusLine.textContent = '保存に失敗した。ブラウザの設定を確認して。';
+    statusLine.textContent = S('saveFailGeneric');
   }
 }
 
 document.getElementById('addPlayerBtn').addEventListener('click', () => {
   const name = document.getElementById('playerNameInput').value.trim();
   const starter = document.getElementById('playerStarterInput').checked;
-  if(!name){ alert('選手名を入力して。'); return; }
+  if(!name){ alert(S('alertNoName')); return; }
   players.push(newPlayer(name, starter));
   document.getElementById('playerNameInput').value = '';
   document.getElementById('playerStarterInput').checked = false;
@@ -1111,7 +1288,7 @@ function renderPlayers(){
   const squad = document.getElementById('playerSquad');
   squad.innerHTML = '';
   if(players.length === 0){
-    squad.innerHTML = `<div class="empty-state"><p>まだ選手が登録されてない。</p><p>上のフォームから選手を追加して。</p></div>`;
+    squad.innerHTML = `<div class="empty-state"><p>${S('emptyNoPlayers1')}</p><p>${S('emptyNoPlayers2')}</p></div>`;
     return;
   }
 
@@ -1125,7 +1302,7 @@ function renderPlayers(){
     if(isInactive && !dividerInserted){
       const divider = document.createElement('div');
       divider.className = 'inactive-divider';
-      divider.textContent = '対象外';
+      divider.textContent = S('inactiveDivider');
       squad.appendChild(divider);
       dividerInserted = true;
     }
@@ -1142,17 +1319,17 @@ function renderPlayers(){
     const head = document.createElement('div');
     head.className = 'entry-head player-head';
     head.innerHTML = `
-      <span class="drag-handle" title="ドラッグで並べ替え">⠿</span>
-      <span class="entry-num">優先${dPos+1}</span>
-      <button class="move-btn" data-act="up" title="優先度を上げる" ${canMoveUp?'':'disabled'}>↑</button>
-      <button class="move-btn" data-act="down" title="優先度を下げる" ${canMoveDown?'':'disabled'}>↓</button>
-      <span class="player-starter-star ${p.starter ? 'starter' : 'bench'}" title="${p.starter ? 'スタメン' : '控え'}(クリックで切替)">${p.starter ? '★' : '☆'}</span>
+      <span class="drag-handle" title="${S('dragHandleTitle')}">⠿</span>
+      <span class="entry-num">${S('priority', { n: dPos+1 })}</span>
+      <button class="move-btn" data-act="up" title="${S('raisePriorityTitle')}" ${canMoveUp?'':'disabled'}>↑</button>
+      <button class="move-btn" data-act="down" title="${S('lowerPriorityTitle')}" ${canMoveDown?'':'disabled'}>↓</button>
+      <span class="player-starter-star ${p.starter ? 'starter' : 'bench'}" title="${S('starterToggleTitle', { state: p.starter ? S('starterWord') : S('benchWord') })}">${p.starter ? '★' : '☆'}</span>
       ${p.isGK ? '<span class="starter-badge p-pos gk-badge">GK</span>' : ''}
       <input class="entry-label" value="${escapeHtml(p.name)}" data-id="${p.id}" style="max-width:180px; flex:none;">
       <span class="row-break"></span>
-      <span class="entry-skillcount p-cnt">現在${p.currentSkills.length}・目標${p.targetSkills.length}</span>
-      <label class="player-active-toggle"><input type="checkbox" class="player-active-check" ${p.active===false?'':'checked'}>対象</label>
-      <button class="delete-btn" data-id="${p.id}" title="削除">×</button>
+      <span class="entry-skillcount p-cnt">${S('curTgtCount', { n: p.currentSkills.length, m: p.targetSkills.length })}</span>
+      <label class="player-active-toggle"><input type="checkbox" class="player-active-check" ${p.active===false?'':'checked'}>${S('targetCheckboxLabel')}</label>
+      <button class="delete-btn" data-id="${p.id}" title="${S('deleteTitle')}">×</button>
       <span class="chevron">▶</span>
     `;
     head.addEventListener('click', (e) => {
@@ -1222,12 +1399,12 @@ function renderPlayers(){
 
     const posTitle = document.createElement('div');
     posTitle.className = 'cat-title';
-    posTitle.textContent = 'ポジション';
+    posTitle.textContent = S('posTitle');
     posTitle.style.color = 'var(--chalk)';
     body.appendChild(posTitle);
     const posToggle = document.createElement('label');
     posToggle.style.cssText = 'display:flex; align-items:center; gap:6px; margin-bottom:16px; cursor:pointer; font-size:13px;';
-    posToggle.innerHTML = `<input type="checkbox" class="player-isgk-check" ${p.isGK ? 'checked' : ''}>GK選手(ヴェルレーヌ対象)`;
+    posToggle.innerHTML = `<input type="checkbox" class="player-isgk-check" ${p.isGK ? 'checked' : ''}>${S('gkCheckboxLabel')}`;
     posToggle.addEventListener('click', e => e.stopPropagation());
     posToggle.querySelector('input').addEventListener('change', (e) => {
       p.isGK = e.target.checked;
@@ -1239,7 +1416,7 @@ function renderPlayers(){
     // 現在の追加スキル(最大5、順不同)
     const curTitle = document.createElement('div');
     curTitle.className = 'cat-title';
-    curTitle.textContent = '現在の追加スキル(最大5)';
+    curTitle.textContent = S('curSkillsTitle');
     curTitle.style.color = 'var(--chalk)';
     body.appendChild(curTitle);
     CATEGORIES.forEach(cat => {
@@ -1247,7 +1424,7 @@ function renderPlayers(){
       catBlock.className = 'cat-block';
       const catTitle = document.createElement('div');
       catTitle.className = `cat-title ${cat.key}`;
-      catTitle.textContent = cat.label;
+      catTitle.textContent = catLabel(cat.key);
       catBlock.appendChild(catTitle);
       const curGrid = document.createElement('div');
       curGrid.className = 'skill-grid';
@@ -1256,7 +1433,7 @@ function renderPlayers(){
         const disabled = !on && p.currentSkills.length >= 5;
         const chip = document.createElement('span');
         chip.className = `skill-chip ${cat.key} ${on ? 'on' : ''} ${disabled ? 'disabled' : ''}`;
-        chip.textContent = s;
+        chip.textContent = skillLabel(s);
         chip.addEventListener('click', () => {
           if(on){ p.currentSkills = p.currentSkills.filter(x => x !== s); }
           else{
@@ -1275,22 +1452,22 @@ function renderPlayers(){
     // 目標スキル(優先順、候補は最大MAX_TARGET_SKILLS。実際に付けられるのは追加スキル枠5つまで)
     const tgtTitle = document.createElement('div');
     tgtTitle.className = 'cat-title';
-    tgtTitle.textContent = `目標スキル(理想・優先順、候補は最大${MAX_TARGET_SKILLS}。追加できるのは枠5つまで、6個目以降は控え候補) — クリックした順が優先度になる`;
+    tgtTitle.textContent = S('tgtSkillsTitle', { max: MAX_TARGET_SKILLS });
     tgtTitle.style.color = 'var(--chalk)';
     body.appendChild(tgtTitle);
 
     const tgtList = document.createElement('div');
     tgtList.className = 'target-list';
     if(p.targetSkills.length === 0){
-      tgtList.innerHTML = `<div style="color:var(--muted); font-size:12.5px;">まだ目標スキルが未設定。下のスキル一覧から選んで。</div>`;
+      tgtList.innerHTML = `<div style="color:var(--muted); font-size:12.5px;">${S('tgtSkillsEmpty')}</div>`;
     }else{
       p.targetSkills.forEach((s, i) => {
         const row = document.createElement('div');
         row.className = 'target-row';
         row.innerHTML = `
-          <span class="drag-handle" title="ドラッグで並べ替え">⠿</span>
+          <span class="drag-handle" title="${S('dragHandleTitle')}">⠿</span>
           <span class="target-rank">${i+1}</span>
-          <span class="tname" style="color:var(--${SKILL_TO_CAT[s]||'other'})">${escapeHtml(s)}</span>
+          <span class="tname" style="color:var(--${SKILL_TO_CAT[s]||'other'})">${escapeHtml(skillLabel(s))}</span>
           <button data-act="up" ${i===0?'disabled':''}>↑</button>
           <button data-act="down" ${i===p.targetSkills.length-1?'disabled':''}>↓</button>
           <button data-act="del">×</button>
@@ -1324,7 +1501,7 @@ function renderPlayers(){
       catBlock.className = 'cat-block';
       const catTitle = document.createElement('div');
       catTitle.className = `cat-title ${cat.key}`;
-      catTitle.textContent = cat.label;
+      catTitle.textContent = catLabel(cat.key);
       catBlock.appendChild(catTitle);
       const tgtGrid = document.createElement('div');
       tgtGrid.className = 'skill-grid';
@@ -1333,7 +1510,7 @@ function renderPlayers(){
         const disabled = !on && p.targetSkills.length >= MAX_TARGET_SKILLS;
         const chip = document.createElement('span');
         chip.className = `skill-chip ${cat.key} ${on ? 'on' : ''} ${disabled ? 'disabled' : ''}`;
-        chip.textContent = s;
+        chip.textContent = skillLabel(s);
         chip.addEventListener('click', () => {
           if(on){ p.targetSkills = p.targetSkills.filter(x => x !== s); }
           else{
@@ -1385,8 +1562,8 @@ function renderGPSection(){
   Object.values(countByPlayer).forEach(n => { total += computeGPForCount(n).applied; });
 
   return `<div class="plan-section">
-    <div class="plan-title">■ 想定GP消費(応用方式・まとめ技)</div>
-    <div class="plan-note">同名の育成選手(ロンバルジ/ヴェルレーヌ)同士でスキルを1体にまとめてから(129,000GP/回)、まとめ終えた個体を対象選手へ特別強化する方式(仕上げ費用は保有スキル数で変動)での合計GP目安。まとめ技は対象選手1人ぶんずつしか使えないので、選手ごとに集計してから合算してる。</div>
+    <div class="plan-title">${S('gpSectionTitle')}</div>
+    <div class="plan-note">${S('gpNote')}</div>
     <div style="font-family:'Oswald',sans-serif; font-size:22px; font-weight:600;">${total.toLocaleString()} GP</div>
   </div>`;
 }
@@ -1547,16 +1724,17 @@ function computePlan(){
 }
 function renderLedgerSection(title, ledger){
   const changed = ledger.filter(l => l.used > 0);
+  const th = S('ledgerTh');
   let html = `<div class="plan-section">
-    <div class="plan-title">■ ${title}(今回変化があったスキルのみ)</div>
-    <table class="plan-table"><thead><tr><th>スキル名</th><th>保有数</th><th>今回割当数</th><th>残数</th><th>状態</th></tr></thead><tbody>`;
+    <div class="plan-title">${S('ledgerTitle', { title })}</div>
+    <table class="plan-table"><thead><tr><th>${th[0]}</th><th>${th[1]}</th><th>${th[2]}</th><th>${th[3]}</th><th>${th[4]}</th></tr></thead><tbody>`;
   changed.forEach(l => {
-    const status = l.left === 0 ? '使い切り' : '一部使用';
+    const status = l.left === 0 ? S('ledgerUsedUp') : S('ledgerPartial');
     html += `<tr class="${l.left===0?'used-up':''}">
-      <td>${escapeHtml(l.skill)}</td><td>${l.original}</td><td>${l.used}</td><td>${l.left}</td><td>${status}</td>
+      <td>${escapeHtml(skillLabel(l.skill))}</td><td>${l.original}</td><td>${l.used}</td><td>${l.left}</td><td>${status}</td>
     </tr>`;
   });
-  if(changed.length === 0){ html += `<tr><td colspan="5">今回割り当てが発生したスキルはない</td></tr>`; }
+  if(changed.length === 0){ html += `<tr><td colspan="5">${S('ledgerEmpty')}</td></tr>`; }
   html += `</tbody></table></div>`;
   return html;
 }
@@ -1579,7 +1757,7 @@ function sortByTargetOrder(skills, targets){
 function renderPlan(){
   const out = document.getElementById('planOutput');
   if(players.length === 0){
-    out.innerHTML = `<div class="empty-state"><p>まだ選手が登録されてない。先に「選手管理」タブで選手と目標スキルを登録して。</p></div>`;
+    out.innerHTML = `<div class="empty-state"><p>${S('emptyNoPlayersForPlan')}</p></div>`;
     return;
   }
   const { byPlayer, multiCandidates, ronbarujiLedger, verlaineLedger, ronbarujiGap, verlaineGap, ronbarujiTotal, verlaineTotal } = computePlan();
@@ -1588,58 +1766,60 @@ function renderPlan(){
 
   let html = '';
 
+  const mcTh = S('multiCandTh');
   html += `<div class="plan-section">
-    <div class="plan-title">■ 候補が複数いるスキル(誰に付けるか選ぶ)</div>
-    <div class="plan-note">チェックした選手が優先して在庫を取る。チェックなしの選手は選手管理タブの並び順。在庫数を超えてチェックすると、最初にチェックした選手が外れる。緑=今のプランで割当予定</div>
-    <table class="plan-table"><thead><tr><th>スキル名</th><th>在庫</th><th>候補の選手</th></tr></thead><tbody>`;
+    <div class="plan-title">${S('multiCandTitle')}</div>
+    <div class="plan-note">${S('multiCandNote')}</div>
+    <table class="plan-table"><thead><tr><th>${mcTh[0]}</th><th>${mcTh[1]}</th><th>${mcTh[2]}</th></tr></thead><tbody>`;
   multiCandidates.forEach(d => {
-    html += `<tr><td>${escapeHtml(d.skill)}${d.isGK ? ' <span class="gk-need-top-badge">(GK)</span>' : ''}</td><td>${d.stock}</td><td>${
+    html += `<tr><td>${escapeHtml(skillLabel(d.skill))}${d.isGK ? ' <span class="gk-need-top-badge">(GK)</span>' : ''}</td><td>${d.stock}</td><td>${
       d.players.map(pl => `<label class="pill ${pl.assigned ? 'green' : ''} plan-check"><input type="checkbox" class="plan-pick-check" data-skill="${escapeHtml(d.skill)}" data-gk="${d.isGK ? 1 : 0}" data-stock="${d.stock}" data-player-id="${pl.id}" ${pl.assigned ? 'checked' : ''}>${pl.starter ? '★' : ''}${escapeHtml(pl.name)}</label>`).join('')
     }</td></tr>`;
   });
-  if(multiCandidates.length === 0){ html += `<tr><td colspan="3">在庫があって候補が複数いるスキルはない</td></tr>`; }
+  if(multiCandidates.length === 0){ html += `<tr><td colspan="3">${S('multiCandEmpty')}</td></tr>`; }
   html += `</tbody></table></div>`;
 
+  const sumTh = S('summaryTh');
   html += `<div class="plan-section">
-    <div class="plan-title">■ 選手別サマリー(選手管理タブの並び順=優先度で配分)</div>
-    <div class="plan-note">供給=ロンバルジ在庫${ronbarujiTotal}体(フィールド用)+ヴェルレーヌ在庫${verlaineTotal}体(GK用) / 需要=各選手の「目標スキル」のうち未装備の分(対象外にした選手は含まない)</div>
+    <div class="plan-title">${S('summaryTitle')}</div>
+    <div class="plan-note">${S('summaryNote', { r: ronbarujiTotal, v: verlaineTotal })}</div>
     <table class="plan-table summary-table"><thead><tr>
-      <th>選手名</th><th>ポジション</th><th>起用</th><th>現在の追加スキル</th><th>一致数</th><th>目標スキル(優先順)</th><th>今すぐ追加で特別強化できるスキル</th>
+      <th>${sumTh[0]}</th><th>${sumTh[1]}</th><th>${sumTh[2]}</th><th>${sumTh[3]}</th><th>${sumTh[4]}</th><th>${sumTh[5]}</th><th>${sumTh[6]}</th>
     </tr></thead><tbody>`;
   orderedPlayers.forEach(p => {
     const matchCount = p.targetSkills.filter(s => p.currentSkills.includes(s)).length;
     const addList = byPlayer[p.id] || [];
     let addText = addList.length
-      ? addList.map(a => `<label class="pill green plan-check"><input type="checkbox" class="plan-apply-check" data-player-id="${p.id}" data-skill="${escapeHtml(a.skill)}" checked>${escapeHtml(a.skill)}</label>`).join('')
-      : '(なし)';
+      ? addList.map(a => `<label class="pill green plan-check"><input type="checkbox" class="plan-apply-check" data-player-id="${p.id}" data-skill="${escapeHtml(a.skill)}" checked>${escapeHtml(skillLabel(a.skill))}</label>`).join('')
+      : S('none');
     // 空き枠が足りない分は、目標外の現在スキルを先頭から外して差し替える(applySelectedSkillsと同じ順)
     const dropCount = Math.max(0, addList.length - (5 - p.currentSkills.length));
     if(dropCount > 0){
-      addText += `<div class="plan-note" style="margin-top:6px;" title="枠が埋まってるから先に外す。目標外のスキルで、GPは不要。チェックした分だけ先頭から外す">${replaceableSkills(p).slice(0, dropCount).map(s => `🔁 <span class="pill">${escapeHtml(s)}</span>`).join(' ')}</div>`;
+      addText += `<div class="plan-note" style="margin-top:6px;" title="${S('dropNoteTitle')}">${replaceableSkills(p).slice(0, dropCount).map(s => `🔁 <span class="pill">${escapeHtml(skillLabel(s))}</span>`).join(' ')}</div>`;
     }
     html += `<tr class="${p.starter?'is-starter':''}">
       <td class="c-name">${escapeHtml(p.name)}</td>
       <td class="c-pos">${p.isGK ? '<span class="starter-badge gk-badge">GK</span>' : ''}</td>
-      <td class="starter-star-cell c-star" title="${p.starter?'スタメン':'控え'}">${p.starter?'★':'☆'}</td>
-      <td class="c-cur" data-label="現在">${sortByTargetOrder(p.currentSkills, p.targetSkills).map(s=>`<span class="pill">${escapeHtml(s)}</span>`).join('') || '(なし)'}</td>
-      <td class="c-match" data-label="一致">${matchCount}/${p.targetSkills.length}</td>
-      <td class="c-tgt" data-label="目標">${p.targetSkills.map(s=>`<span class="pill">${escapeHtml(s)}</span>`).join('') || '(未設定)'}</td>
-      <td class="c-add" data-label="今すぐ強化">${addText}</td>
+      <td class="starter-star-cell c-star" title="${p.starter?S('starterWord'):S('benchWord')}">${p.starter?'★':'☆'}</td>
+      <td class="c-cur" data-label="${S('dLabelCur')}">${sortByTargetOrder(p.currentSkills, p.targetSkills).map(s=>`<span class="pill">${escapeHtml(skillLabel(s))}</span>`).join('') || S('none')}</td>
+      <td class="c-match" data-label="${S('dLabelMatch')}">${matchCount}/${p.targetSkills.length}</td>
+      <td class="c-tgt" data-label="${S('dLabelTgt')}">${p.targetSkills.map(s=>`<span class="pill">${escapeHtml(skillLabel(s))}</span>`).join('') || S('notSet')}</td>
+      <td class="c-add" data-label="${S('dLabelAdd')}">${addText}</td>
     </tr>`;
   });
   if(orderedPlayers.length === 0){
-    html += `<tr><td colspan="7">今すぐ特別強化できるスキルがある選手はいない(在庫が足りないか、全員目標スキルを満たしてる)</td></tr>`;
+    html += `<tr><td colspan="7">${S('summaryEmpty')}</td></tr>`;
   }
   html += `</tbody></table>
     <div class="plan-apply-bar">
       <span class="status-line" id="applyStatusLine" style="margin:0;"></span>
-      <button class="add-btn" id="applyPlanBtn" type="button">選択した分を反映する</button>
+      <button class="add-btn" id="applyPlanBtn" type="button">${S('applyPlanBtn')}</button>
     </div>
   </div>`;
 
   html += `<div id="gpSummaryBox"></div>`;
-  html += `<div id="ronbarujiLedgerBox">${renderLedgerSection('ロンバルジ在庫台帳', ronbarujiLedger)}</div>`;
-  html += `<div id="verlaineLedgerBox">${renderLedgerSection('ヴェルレーヌ在庫台帳', verlaineLedger)}</div>`;
+  html += `<div id="ronbarujiLedgerBox">${renderLedgerSection(S('lombardiLedger'), ronbarujiLedger)}</div>`;
+  html += `<div id="verlaineLedgerBox">${renderLedgerSection(S('verlaineLedger'), verlaineLedger)}</div>`;
   // 優先育成候補: ロンバルジ/ヴェルレーヌに付与されるスキルはランダムでコントロールできないため一旦非表示。
   // 復活させる場合は下の2行のコメントを外すだけでいい(computePlan側の計算はそのまま残してある)
   // html += renderGapSection('ロンバルジ側で在庫0のまま需要が残るスキル', ronbarujiGap);
@@ -1649,7 +1829,7 @@ function renderPlan(){
   // gpSummaryBoxはチェックボックスのDOM状態(このhtmlをinnerHTMLに反映した後の状態)を読むため、
   // 挿入が終わってから描画する(挿入前に読むと1つ前のDOM=古い状態を見てしまい空扱いになるバグがあった)
   document.getElementById('gpSummaryBox').innerHTML = renderGPSection();
-  document.getElementById('planStatusLine').textContent = '計算した時点の在庫・選手データを反映してる';
+  document.getElementById('planStatusLine').textContent = S('planStatusCalculated');
 }
 function computeLedgerFromChecks(){
   const allList = readEntriesFromStorage(STORAGE_KEY);
@@ -1680,8 +1860,8 @@ function refreshLedgersLive(){
   const { ronbarujiLedger, verlaineLedger } = computeLedgerFromChecks();
   const rBox = document.getElementById('ronbarujiLedgerBox');
   const vBox = document.getElementById('verlaineLedgerBox');
-  if(rBox) rBox.innerHTML = renderLedgerSection('ロンバルジ在庫台帳', ronbarujiLedger);
-  if(vBox) vBox.innerHTML = renderLedgerSection('ヴェルレーヌ在庫台帳', verlaineLedger);
+  if(rBox) rBox.innerHTML = renderLedgerSection(S('lombardiLedger'), ronbarujiLedger);
+  if(vBox) vBox.innerHTML = renderLedgerSection(S('verlaineLedger'), verlaineLedger);
   const gBox = document.getElementById('gpSummaryBox');
   if(gBox) gBox.innerHTML = renderGPSection();
 }
@@ -1714,23 +1894,32 @@ document.getElementById('planOutput').addEventListener('click', async (e) => {
   if(e.target.id !== 'applyPlanBtn') return;
   const checks = Array.from(document.querySelectorAll('.plan-apply-check:checked'));
   if(checks.length === 0){
-    alert('反映するスキルが選択されてない。');
+    alert(S('alertNoneSelected'));
     return;
   }
   const selections = checks.map(c => ({ playerId: c.getAttribute('data-player-id'), skill: c.getAttribute('data-skill') }));
-  if(!confirm(`${selections.length}件のスキルを反映する。対応する在庫からも減るし、枠が埋まってる選手は目標外のスキルを外して差し替えるけどよい?`)) return;
+  if(!confirm(S('confirmApply', { n: selections.length }))) return;
   const applied = applySelectedSkills(selections);
   planPriority = {}; // 反映後は在庫も候補も変わるので、優先選択はリセットする
   render();
   renderPlayers();
   renderPlan();
   const planStatus = document.getElementById('planStatusLine');
-  planStatus.textContent = `${applied}件を反映した(在庫・選手データ更新済み)`;
+  planStatus.textContent = S('planStatusApplied', { n: applied });
 });
 
 /* ==================================================================
    初期化
    ================================================================== */
+document.getElementById('langToggleBtn').addEventListener('click', () => {
+  LANG = (LANG === 'ja') ? 'en' : 'ja';
+  try{ localStorage.setItem('appLang', LANG); }catch(e){}
+  applyStaticI18n();
+  render();
+  renderPlayers();
+  if(document.getElementById('tab-plan').classList.contains('active')) renderPlan();
+});
+applyStaticI18n();
 loadEntries();
 loadPlayers();
 
