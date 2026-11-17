@@ -134,33 +134,6 @@
   .dash-cell.other .num{color:var(--other);}
   .dash-cell.gk .num{color:var(--gk);}
 
-  /* ---- GKスキル不足(ヴェルレーヌのトレーニングの目安) ---- */
-  .gk-need-box{margin-bottom:24px;}
-  .gk-need-title{
-    font-family:'Oswald',sans-serif;
-    font-size:14px;
-    letter-spacing:0.02em;
-    margin-bottom:8px;
-    cursor:pointer;
-    user-select:none;
-  }
-  .gk-need-arrow{display:inline-block; width:14px;}
-  .gk-need-box.collapsed .gk-need-body{display:none;}
-  .gk-need-empty{font-size:12.5px; color:var(--muted);}
-  .gk-need-subtitle{
-    font-family:'Oswald',sans-serif;
-    font-size:12.5px;
-    color:var(--muted);
-    letter-spacing:0.02em;
-    margin:18px 0 8px;
-  }
-  table.gk-need-table{width:100%; border-collapse:collapse; font-size:13px;}
-  table.gk-need-table th{
-    background:#1f2937; color:#fff; text-align:left;
-    padding:7px 10px; font-weight:600; font-size:12px;
-  }
-  table.gk-need-table td{padding:7px 10px; border-bottom:1px solid var(--line);}
-  table.gk-need-table tr.top td{color:var(--gk); font-weight:600;}
   .gk-need-top-badge{font-size:11px; color:var(--gk); font-weight:600;}
 
   /* ---- toolbar ---- */
@@ -422,7 +395,6 @@
   .skill-chip.defense.on{background:var(--defense);}
   .skill-chip.other.on{background:var(--other);}
   .skill-chip.gk.on{background:var(--gk);}
-  .skill-chip.pos.on{background:var(--accent);}
   .skill-chip.disabled{opacity:0.35; cursor:not-allowed;}
 
   .inactive-divider{
@@ -480,7 +452,6 @@
     letter-spacing:0.02em;
   }
   .starter-badge.starter{background:var(--accent); color:var(--bg);}
-  .starter-badge.bench{background:var(--panel-2); color:var(--muted); border:1px solid var(--line);}
   .starter-badge.gk-badge{background:var(--gk); color:var(--bg);}
   .player-starter-star{
     font-size:18px;
@@ -602,7 +573,6 @@
 
     /* 在庫: 閉じてる間は1行(番号・スキル・削除)。名前欄は開いたときだけ出す。フィールドタグと「Nスキル」は省く */
     .entry:not(.player-entry) > .entry-head{padding:9px 12px;}
-    .entry-head > .starter-badge.bench{display:none;}
     .entry:not(.player-entry) .entry-skillcount{display:none;}
     .entry:not(.open):not(.player-entry) > .entry-head > .entry-label{display:none;}
     .entry:not(.player-entry) > .entry-head > .delete-btn{order:1; margin-left:auto;}
@@ -660,18 +630,11 @@
   <div class="tab-panel active" id="tab-inventory">
     <div class="dash" id="dash"></div>
     <div class="status-line" id="totalCountLine" style="margin-top:0;"></div>
-    <div class="gk-need-box" id="gkSkillNeedBox"></div>
 
     <div class="toolbar">
       <input type="text" id="searchInput" placeholder="スキル名で検索(例: ラボーナ)">
       <button class="add-btn" id="addBtn">＋ 育成選手を追加</button>
-      <button class="ghost-btn" id="exportBtn">書き出す</button>
-      <button class="ghost-btn" id="importTrigger">読み込む</button>
-      <button class="ghost-btn" id="setSaveDirBtn">保存先フォルダを設定</button>
-      <button class="ghost-btn" id="renumberRonbarujiBtn">ロンバルジ番号を振り直す</button>
-      <input type="file" id="importInput" accept="application/json" style="display:none;">
     </div>
-    <div class="status-line" id="saveDirLabel">保存先: 未設定(書き出すと通常のダウンロードフォルダに保存される)</div>
 
     <div class="bulk-panel" id="bulkPanel" style="display:none;">
       <div class="bulk-header">
@@ -703,9 +666,6 @@
         <input type="checkbox" id="playerStarterInput"> スタメン
       </label>
       <button class="add-btn" id="addPlayerBtn">＋ 選手を追加</button>
-      <button class="ghost-btn" id="exportPlayersBtn">書き出す</button>
-      <button class="ghost-btn" id="importPlayersTrigger">読み込む</button>
-      <input type="file" id="importPlayersInput" accept="application/json" style="display:none;">
     </div>
     <div class="status-line" id="playerStatusLine" style="margin-top:0; margin-bottom:16px;"></div>
 
@@ -740,8 +700,6 @@ const CATEGORIES = [
 ];
 const SKILL_TO_CAT = {};
 CATEGORIES.forEach(c => c.skills.forEach(s => SKILL_TO_CAT[s] = c.key));
-
-const POSITIONS = ['GK','CB','LSB','RSB','DMF','CMF','LMF','RMF','OMF','LWG','RWG','ST','CF'];
 
 function escapeHtml(str){
   const d = document.createElement('div');
@@ -877,7 +835,6 @@ function getFiltered(){
 }
 function render(){
   buildDash();
-  renderGKSkillNeed();
 
   const ronbarujiCount = entries.filter(en => !en.isGK).length;
   const verlaineCount = entries.filter(en => en.isGK).length;
@@ -910,7 +867,7 @@ function render(){
     head.innerHTML = `
       <span class="chevron">▶</span>
       <span class="entry-num">${String(idx+1).padStart(3,'0')}</span>
-      <span class="starter-badge ${en.isGK ? 'gk-badge' : 'bench'}">${en.isGK ? 'GK' : 'フィールド'}</span>
+      ${en.isGK ? '<span class="starter-badge gk-badge">GK</span>' : ''}
       <span class="entry-skills">${skillsHtml}</span>
       <input class="entry-label" value="${escapeHtml(en.label)}" data-id="${en.id}">
       <span class="entry-skillcount">${en.skills.length}スキル</span>
@@ -1010,18 +967,6 @@ document.getElementById('addBtn').addEventListener('click', () => {
 document.getElementById('bulkClose').addEventListener('click', () => {
   document.getElementById('bulkPanel').style.display = 'none';
 });
-document.getElementById('renumberRonbarujiBtn').addEventListener('click', () => {
-  const list = entries.filter(en => !en.isGK).sort((a, b) => {
-    const na = parseInt((/(\d+)\s*$/.exec(a.label || '') || [])[1] || '0', 10);
-    const nb = parseInt((/(\d+)\s*$/.exec(b.label || '') || [])[1] || '0', 10);
-    return na - nb;
-  });
-  if(list.length === 0){ alert('ロンバルジの個体がまだ登録されてない。'); return; }
-  if(!confirm(`ロンバルジ${list.length}体のラベル番号を001から振り直す。よければOKを押して。`)) return;
-  list.forEach((en, i) => { en.label = 'ロンバルジ ' + String(i + 1).padStart(3, '0'); });
-  saveEntries();
-  render();
-});
 document.getElementById('bulkBlankAdd').addEventListener('click', () => {
   if(!confirm('スキル未設定のまま登録する。個体は基本スキル付きで獲得するはずなので、誤クリックでないか確認して。よければOKを押して。')) return;
   const isGK = document.getElementById('bulkIsGK').checked;
@@ -1048,120 +993,6 @@ document.getElementById('bulkSubmit').addEventListener('click', () => {
   render();
 });
 
-/* ---- 保存先フォルダ(File System Access API + IndexedDB) ---- */
-const DIR_DB_NAME = 'ronbaruji-manager-db';
-const DIR_STORE_NAME = 'handles';
-const DIR_KEY = 'saveDir';
-let saveDirHandle = null;
-
-function idbOpen(){
-  return new Promise((resolve, reject) => {
-    const req = indexedDB.open(DIR_DB_NAME, 1);
-    req.onupgradeneeded = () => req.result.createObjectStore(DIR_STORE_NAME);
-    req.onsuccess = () => resolve(req.result);
-    req.onerror = () => reject(req.error);
-  });
-}
-async function idbGet(key){
-  const db = await idbOpen();
-  return new Promise((resolve, reject) => {
-    const req = db.transaction(DIR_STORE_NAME, 'readonly').objectStore(DIR_STORE_NAME).get(key);
-    req.onsuccess = () => resolve(req.result);
-    req.onerror = () => reject(req.error);
-  });
-}
-async function idbSet(key, val){
-  const db = await idbOpen();
-  return new Promise((resolve, reject) => {
-    const tx = db.transaction(DIR_STORE_NAME, 'readwrite');
-    tx.objectStore(DIR_STORE_NAME).put(val, key);
-    tx.oncomplete = () => resolve();
-    tx.onerror = () => reject(tx.error);
-  });
-}
-function updateSaveDirLabel(){
-  const label = document.getElementById('saveDirLabel');
-  if(!label) return;
-  label.textContent = saveDirHandle
-    ? `保存先: ${saveDirHandle.name}(書き出すとこのフォルダに直接保存される)`
-    : '保存先: 未設定(書き出すと通常のダウンロードフォルダに保存される)';
-}
-async function restoreSaveDir(){
-  if(!window.showDirectoryPicker) return;
-  try{
-    const handle = await idbGet(DIR_KEY);
-    if(handle) saveDirHandle = handle;
-  }catch(e){}
-  updateSaveDirLabel();
-}
-document.getElementById('setSaveDirBtn').addEventListener('click', async () => {
-  if(!window.showDirectoryPicker){
-    alert('このブラウザは保存先フォルダの指定に対応してない。Chrome/Edgeで開いてみて。');
-    return;
-  }
-  try{
-    const handle = await window.showDirectoryPicker();
-    const perm = await handle.requestPermission({ mode: 'readwrite' });
-    if(perm !== 'granted'){ alert('書き込み権限が許可されなかった。もう一度試して。'); return; }
-    await idbSet(DIR_KEY, handle);
-    saveDirHandle = handle;
-    updateSaveDirLabel();
-  }catch(e){ /* キャンセル */ }
-});
-async function saveJsonFile(filename, json, statusLine){
-  if(saveDirHandle){
-    try{
-      let perm = await saveDirHandle.queryPermission({ mode: 'readwrite' });
-      if(perm !== 'granted'){ perm = await saveDirHandle.requestPermission({ mode: 'readwrite' }); }
-      if(perm === 'granted'){
-        const fileHandle = await saveDirHandle.getFileHandle(filename, { create: true });
-        const writable = await fileHandle.createWritable();
-        await writable.write(json);
-        await writable.close();
-        if(statusLine) statusLine.textContent = `${saveDirHandle.name} フォルダに ${filename} として保存した`;
-        return;
-      }
-    }catch(e){
-      if(statusLine) statusLine.textContent = '指定フォルダへの保存に失敗したから、通常のダウンロードに切り替えた。';
-    }
-  }
-  const blob = new Blob([json], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = filename;
-  document.body.appendChild(a); a.click(); a.remove();
-  URL.revokeObjectURL(url);
-}
-document.getElementById('exportBtn').addEventListener('click', async () => {
-  const statusLine = document.getElementById('statusLine');
-  await saveJsonFile('ronbaruji-backup-latest.json', JSON.stringify(entries, null, 2), statusLine);
-});
-document.getElementById('importTrigger').addEventListener('click', () => {
-  document.getElementById('importInput').click();
-});
-document.getElementById('importInput').addEventListener('change', (e) => {
-  const file = e.target.files[0];
-  if(!file) return;
-  const reader = new FileReader();
-  reader.onload = () => {
-    try{
-      const data = JSON.parse(reader.result);
-      if(!Array.isArray(data)) throw new Error('形式が違う');
-      if(entries.length > 0){
-        const ok = confirm(`今登録されてる${entries.length}件を、このファイルの${data.length}件で上書きする。よければOKを押して。`);
-        if(!ok) return;
-      }
-      entries = data;
-      entries.forEach(en => { if(typeof en.isGK !== 'boolean') en.isGK = false; });
-      saveEntries();
-      render();
-    }catch(err){
-      alert('読み込めなかった。バックアップJSONファイルか確認して。');
-    }
-  };
-  reader.readAsText(file);
-  e.target.value = '';
-});
 document.getElementById('searchInput').addEventListener('input', render);
 
 /* ==================================================================
@@ -1176,26 +1007,29 @@ let openPlayerIds = new Set();
 function newPlayer(name, starter){
   return {
     id: 'p' + Date.now() + Math.random().toString(36).slice(2,7),
-    name, positions: [], starter: !!starter,
+    name, isGK: false, starter: !!starter,
     active: true,
     currentSkills: [],
     targetSkills: []
   };
 }
+function migratePlayer(p){
+  // 旧ポジション(複数選択chip)からの移行: 'GK'を含んでいればisGK:trueに変換する
+  if(typeof p.isGK !== 'boolean'){
+    const oldPositions = Array.isArray(p.positions) ? p.positions : (p.position ? [p.position] : []);
+    p.isGK = oldPositions.includes('GK');
+  }
+  delete p.positions;
+  delete p.position;
+  if(typeof p.active !== 'boolean') p.active = true;
+}
 function loadPlayers(){
   try{
     const raw = localStorage.getItem(STORAGE_KEY_PLAYERS);
     players = raw ? JSON.parse(raw) : [];
-    players.forEach(p => {
-      if(!Array.isArray(p.positions)){
-        p.positions = p.position ? [p.position] : [];
-        delete p.position;
-      }
-      if(typeof p.active !== 'boolean') p.active = true;
-    });
+    players.forEach(migratePlayer);
   }catch(e){ players = []; }
   renderPlayers();
-  renderGKSkillNeed(); // 選手データ読み込み後、GKスキル不足表示を最新化する
 }
 function savePlayers(){
   const statusLine = document.getElementById('playerStatusLine');
@@ -1205,7 +1039,6 @@ function savePlayers(){
   }catch(e){
     statusLine.textContent = '保存に失敗した。ブラウザの設定を確認して。';
   }
-  renderGKSkillNeed(); // 目標スキル・対象フラグ等の変更でGKスキル不足表示が変わるため再描画
 }
 
 document.getElementById('addPlayerBtn').addEventListener('click', () => {
@@ -1314,7 +1147,7 @@ function renderPlayers(){
       <button class="move-btn" data-act="up" title="優先度を上げる" ${canMoveUp?'':'disabled'}>↑</button>
       <button class="move-btn" data-act="down" title="優先度を下げる" ${canMoveDown?'':'disabled'}>↓</button>
       <span class="player-starter-star ${p.starter ? 'starter' : 'bench'}" title="${p.starter ? 'スタメン' : '控え'}(クリックで切替)">${p.starter ? '★' : '☆'}</span>
-      <span class="entry-skillcount p-pos">${escapeHtml(p.positions.join('/')||'ポジション未設定')}</span>
+      ${p.isGK ? '<span class="starter-badge p-pos gk-badge">GK</span>' : ''}
       <input class="entry-label" value="${escapeHtml(p.name)}" data-id="${p.id}" style="max-width:180px; flex:none;">
       <span class="row-break"></span>
       <span class="entry-skillcount p-cnt">現在${p.currentSkills.length}・目標${p.targetSkills.length}</span>
@@ -1389,26 +1222,19 @@ function renderPlayers(){
 
     const posTitle = document.createElement('div');
     posTitle.className = 'cat-title';
-    posTitle.textContent = 'ポジション(複数選択可)';
+    posTitle.textContent = 'ポジション';
     posTitle.style.color = 'var(--chalk)';
     body.appendChild(posTitle);
-    const posGrid = document.createElement('div');
-    posGrid.className = 'skill-grid';
-    posGrid.style.marginBottom = '16px';
-    POSITIONS.forEach(pos => {
-      const on = p.positions.includes(pos);
-      const chip = document.createElement('span');
-      chip.className = `skill-chip pos ${on ? 'on' : ''}`;
-      chip.textContent = pos;
-      chip.addEventListener('click', () => {
-        if(on){ p.positions = p.positions.filter(x => x !== pos); }
-        else{ p.positions.push(pos); }
-        savePlayers();
-        renderPlayers();
-      });
-      posGrid.appendChild(chip);
+    const posToggle = document.createElement('label');
+    posToggle.style.cssText = 'display:flex; align-items:center; gap:6px; margin-bottom:16px; cursor:pointer; font-size:13px;';
+    posToggle.innerHTML = `<input type="checkbox" class="player-isgk-check" ${p.isGK ? 'checked' : ''}>GK選手(ヴェルレーヌ対象)`;
+    posToggle.addEventListener('click', e => e.stopPropagation());
+    posToggle.querySelector('input').addEventListener('change', (e) => {
+      p.isGK = e.target.checked;
+      savePlayers();
+      renderPlayers();
     });
-    body.appendChild(posGrid);
+    body.appendChild(posToggle);
 
     // 現在の追加スキル(最大5、順不同)
     const curTitle = document.createElement('div');
@@ -1528,36 +1354,6 @@ function renderPlayers(){
   });
 }
 
-document.getElementById('exportPlayersBtn').addEventListener('click', async () => {
-  const statusLine = document.getElementById('playerStatusLine');
-  await saveJsonFile('ronbaruji-manager-players.json', JSON.stringify(players, null, 2), statusLine);
-});
-document.getElementById('importPlayersTrigger').addEventListener('click', () => {
-  document.getElementById('importPlayersInput').click();
-});
-document.getElementById('importPlayersInput').addEventListener('change', (e) => {
-  const file = e.target.files[0];
-  if(!file) return;
-  const reader = new FileReader();
-  reader.onload = () => {
-    try{
-      const data = JSON.parse(reader.result);
-      if(!Array.isArray(data)) throw new Error('形式が違う');
-      if(players.length > 0){
-        const ok = confirm(`今登録されてる${players.length}人を、このファイルの${data.length}人で上書きする。よければOKを押して。`);
-        if(!ok) return;
-      }
-      players = data;
-      savePlayers();
-      renderPlayers();
-    }catch(err){
-      alert('読み込めなかった。選手データのバックアップJSONか確認して。');
-    }
-  };
-  reader.readAsText(file);
-  e.target.value = '';
-});
-
 /* ==================================================================
    GP計算 — 「1個ずつ直で特別強化」vs「同名の育成選手(ロンバルジ/ヴェルレーヌ)
    同士でスキルをまとめてから対象選手に特別強化(まとめ技)」のGP比較。
@@ -1653,8 +1449,7 @@ function applySelectedSkills(selections){
     const full = p.currentSkills.length >= 5;
     const dropSkill = full ? replaceableSkills(p)[0] : null;
     if(full && !dropSkill) return;
-    const isGK = (p.positions||[]).includes('GK');
-    if(!consumeIndividualForSkill(skill, isGK)) return;
+    if(!consumeIndividualForSkill(skill, p.isGK)) return;
     if(dropSkill) p.currentSkills = p.currentSkills.filter(s => s !== dropSkill); // 外したスキルは在庫に戻らない
     p.currentSkills.push(skill);
     applied++;
@@ -1701,7 +1496,7 @@ function computePlan(){
     // ゲーム内ではGP無しで追加スキルを外せるので、目標外の現在スキルは空き枠として数える
     slotsLeftMap[p.id] = 5 - p.currentSkills.length + replaceableSkills(p).length;
     if(slotsLeftMap[p.id] <= 0) return;
-    const isGK = (p.positions||[]).includes('GK');
+    const isGK = p.isGK;
     p.targetSkills.forEach((skill, idx) => {
       if(p.currentSkills.includes(skill)) return;
       const base = (players.length - rank) * 100 + (p.targetSkills.length - idx);
@@ -1730,7 +1525,7 @@ function computePlan(){
       .map(([skill, list]) => ({
         skill, isGK, stock: pool[skill],
         players: list.slice().sort((a, b) => b.base - a.base).map(n => ({
-          id: n.playerId, name: n.playerName, starter: n.starter, picked: n.picked,
+          id: n.playerId, name: n.playerName, starter: n.starter,
           assigned: assignedKeys.has(n.skill + '::' + n.playerId)
         }))
       }));
@@ -1750,77 +1545,6 @@ function computePlan(){
     verlaineTotal: verlaineList.length
   };
 }
-// ヴェルレーヌ(GK用)のトレーニングの目安: 対象GK選手が「付けたいスキル(目標スキル)」のうち
-// 現在庫では埋まらない分をそのまま一覧化する。GK選手の目標スキルはポジションで判定しているだけで
-// スキルの種類(カテゴリ)は問わない仕様のため、「ゴールキーパー系」4スキルに絞り込んではいけない
-// (絞り込むと、GK選手が目標にした他カテゴリのスキルが一覧から丸ごと消えて0件扱いになってしまう)。
-// ロンバルジ側は毎回ランダムでスキルを付ける運用のため対象外(ユーザー方針)。
-function computeGKSkillNeed(){
-  if(players.length === 0) return [];
-  const { verlaineGap } = computePlan();
-  // スタメン/控えは区別せず、不足数として合算する(ユーザー方針)
-  return verlaineGap
-    .map(([skill, d]) => ({ skill, count: d.starters + d.bench }))
-    .sort((a, b) => b.count - a.count);
-}
-// GK選手の不足スキルをカテゴリ単位(SKILL_TO_CAT)で集計する。
-// verlaineGapの中身はカテゴリを問わない(GK選手はゴールキーパー系以外のスキルも目標にできる)ため、
-// トレーニング時にどのカテゴリを選ぶといいかの目安として別途カテゴリ集計を出す
-function computeGKCategoryNeed(){
-  const bySkill = computeGKSkillNeed();
-  const byCategory = {};
-  bySkill.forEach(({ skill, count }) => {
-    const catKey = SKILL_TO_CAT[skill];
-    if(!catKey) return;
-    byCategory[catKey] = (byCategory[catKey] || 0) + count;
-  });
-  return Object.entries(byCategory)
-    .map(([key, count]) => ({ key, label: CATEGORIES.find(c => c.key === key).label, count }))
-    .sort((a, b) => b.count - a.count);
-}
-let gkNeedCollapsed = false;
-try{ gkNeedCollapsed = localStorage.getItem('gkNeedCollapsed') === 'true'; }catch(e){}
-
-function renderGKSkillNeed(){
-  const box = document.getElementById('gkSkillNeedBox');
-  if(!box) return;
-  box.classList.toggle('collapsed', gkNeedCollapsed);
-  const rows = computeGKSkillNeed();
-  const catRows = computeGKCategoryNeed();
-  let html = `<div class="gk-need-title" id="gkNeedToggle">
-    <span class="gk-need-arrow">${gkNeedCollapsed ? '▶' : '▼'}</span>■ ヴェルレーヌ トレーニングの目安(GK選手が付けたいスキルの不足)
-  </div>`;
-  html += `<div class="gk-need-body">`;
-  if(rows.length === 0){
-    html += `<div class="gk-need-empty">今のところ在庫不足のスキルはない。</div>`;
-  }else{
-    html += `<table class="gk-need-table"><thead><tr><th>スキル名</th><th>不足数</th></tr></thead><tbody>
-      ${rows.map((d, i) => `<tr class="${i===0?'top':''}">
-        <td>${escapeHtml(d.skill)}${i===0?' <span class="gk-need-top-badge">★おすすめ</span>':''}</td>
-        <td>${d.count}</td>
-      </tr>`).join('')}
-      </tbody></table>`;
-  }
-  html += `<div class="gk-need-subtitle">▶ どのカテゴリでトレーニングするといいか</div>`;
-  if(catRows.length === 0){
-    html += `<div class="gk-need-empty">今のところ不足しているカテゴリはない。</div>`;
-  }else{
-    html += `<table class="gk-need-table"><thead><tr><th>カテゴリ</th><th>不足数(合計)</th></tr></thead><tbody>
-      ${catRows.map((d, i) => `<tr class="${i===0?'top':''}">
-        <td>${escapeHtml(d.label)}${i===0?' <span class="gk-need-top-badge">★おすすめ</span>':''}</td>
-        <td>${d.count}</td>
-      </tr>`).join('')}
-      </tbody></table>`;
-  }
-  html += `</div>`;
-  box.innerHTML = html;
-  document.getElementById('gkNeedToggle').addEventListener('click', () => {
-    gkNeedCollapsed = !gkNeedCollapsed;
-    try{ localStorage.setItem('gkNeedCollapsed', String(gkNeedCollapsed)); }catch(e){}
-    renderGKSkillNeed();
-  });
-}
-
 function renderLedgerSection(title, ledger){
   const changed = ledger.filter(l => l.used > 0);
   let html = `<div class="plan-section">
@@ -1870,7 +1594,7 @@ function renderPlan(){
     <table class="plan-table"><thead><tr><th>スキル名</th><th>在庫</th><th>候補の選手</th></tr></thead><tbody>`;
   multiCandidates.forEach(d => {
     html += `<tr><td>${escapeHtml(d.skill)}${d.isGK ? ' <span class="gk-need-top-badge">(GK)</span>' : ''}</td><td>${d.stock}</td><td>${
-      d.players.map(pl => `<label class="pill ${pl.assigned ? 'green' : ''} plan-check"><input type="checkbox" class="plan-pick-check" data-skill="${escapeHtml(d.skill)}" data-gk="${d.isGK ? 1 : 0}" data-stock="${d.stock}" data-player-id="${pl.id}" ${pl.picked ? 'checked' : ''}>${pl.starter ? '★' : ''}${escapeHtml(pl.name)}</label>`).join('')
+      d.players.map(pl => `<label class="pill ${pl.assigned ? 'green' : ''} plan-check"><input type="checkbox" class="plan-pick-check" data-skill="${escapeHtml(d.skill)}" data-gk="${d.isGK ? 1 : 0}" data-stock="${d.stock}" data-player-id="${pl.id}" ${pl.assigned ? 'checked' : ''}>${pl.starter ? '★' : ''}${escapeHtml(pl.name)}</label>`).join('')
     }</td></tr>`;
   });
   if(multiCandidates.length === 0){ html += `<tr><td colspan="3">在庫があって候補が複数いるスキルはない</td></tr>`; }
@@ -1895,7 +1619,7 @@ function renderPlan(){
     }
     html += `<tr class="${p.starter?'is-starter':''}">
       <td class="c-name">${escapeHtml(p.name)}</td>
-      <td class="c-pos">${escapeHtml(p.positions.join('/')||'')}</td>
+      <td class="c-pos">${p.isGK ? '<span class="starter-badge gk-badge">GK</span>' : ''}</td>
       <td class="starter-star-cell c-star" title="${p.starter?'スタメン':'控え'}">${p.starter?'★':'☆'}</td>
       <td class="c-cur" data-label="現在">${sortByTargetOrder(p.currentSkills, p.targetSkills).map(s=>`<span class="pill">${escapeHtml(s)}</span>`).join('') || '(なし)'}</td>
       <td class="c-match" data-label="一致">${matchCount}/${p.targetSkills.length}</td>
@@ -1938,7 +1662,7 @@ function computeLedgerFromChecks(){
     const skill = c.getAttribute('data-skill');
     const p = players.find(pl => pl.id === c.getAttribute('data-player-id'));
     if(!p) return;
-    const bucket = (p.positions||[]).includes('GK') ? usedVerlaine : usedRonbaruji;
+    const bucket = p.isGK ? usedVerlaine : usedRonbaruji;
     bucket[skill] = (bucket[skill] || 0) + 1;
   });
 
@@ -2001,14 +1725,7 @@ document.getElementById('planOutput').addEventListener('click', async (e) => {
   renderPlayers();
   renderPlan();
   const planStatus = document.getElementById('planStatusLine');
-  planStatus.textContent = `${applied}件を反映した(在庫・選手データ更新済み)。書き出し中…`;
-  try{
-    await saveJsonFile('ronbaruji-backup-latest.json', JSON.stringify(entries, null, 2), null);
-    await saveJsonFile('ronbaruji-manager-players.json', JSON.stringify(players, null, 2), null);
-    planStatus.textContent = `${applied}件を反映して、在庫・選手データを書き出した` + (saveDirHandle ? `(${saveDirHandle.name} フォルダ)` : '(ダウンロードフォルダ)');
-  }catch(err){
-    planStatus.textContent = `${applied}件を反映した。ただし書き出しに失敗したから、各タブの「書き出す」で手動保存して。`;
-  }
+  planStatus.textContent = `${applied}件を反映した(在庫・選手データ更新済み)`;
 });
 
 /* ==================================================================
@@ -2016,13 +1733,8 @@ document.getElementById('planOutput').addEventListener('click', async (e) => {
    ================================================================== */
 loadEntries();
 loadPlayers();
-restoreSaveDir();
 
-/* ---- PWA: Service Worker登録 / 非対応ブラウザでは保存先フォルダ設定を隠す ---- */
-if(!window.showDirectoryPicker){
-  const b = document.getElementById('setSaveDirBtn'); if(b) b.style.display = 'none';
-  const l = document.getElementById('saveDirLabel'); if(l) l.style.display = 'none';
-}
+/* ---- PWA: Service Worker登録 ---- */
 if('serviceWorker' in navigator && location.protocol.startsWith('http')){
   window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(()=>{}); });
 }
